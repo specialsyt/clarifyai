@@ -8,6 +8,30 @@ const groq = createOpenAI({
   apiKey: process.env.GROQ_API_KEY
 })
 
+export async function evaulateUserResponse(
+  transcript: string,
+  mainQuestion: EnhancedQuestion
+): Promise<string | null> {
+  'use server'
+
+  const analysis = await analyzeTranscript(
+    transcript,
+    mainQuestion,
+    mainQuestion.goals
+  )
+
+  if (analysis.indicies.length > 0) {
+    const leadingQuestion = await generateLeadingQuestion(
+      transcript,
+      mainQuestion,
+      analysis.indicies[0]
+    )
+    return leadingQuestion
+  } else {
+    return null
+  }
+}
+
 export async function analyzeTranscript(
   transcript: string,
   mainQuestion: EnhancedQuestion,
