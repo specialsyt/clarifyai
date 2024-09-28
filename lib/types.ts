@@ -62,3 +62,8 @@ export type Survey = {
   description: string
   questions: Question[]
 }
+
+export type LLMEvaluationResponse = {
+  text: string
+  indicies: number[]
+}
