@@ -104,142 +104,147 @@ export default function SurveySetup() {
 
   return (
     <div className="flex">
-      <form action={dispatch} className="flex flex-col w-2/3 items-center">
-        <div className="grow w-2/3 rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
-          <input
-            className="peer block w-2/5 rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] text-xl outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-            id="surveyName"
-            type="surveyName"
-            name="surveyName"
-            placeholder="Create a New Survey"
-            required
-          />
-          <input
-            className="peer block w-full rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] mt-6 text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-            id="description"
-            type="description"
-            name="description"
-            placeholder="Survey Description"
-          />
-        </div>
-        {questions.map(q => {
-          let curr = q.id
-          return (
-            <div
-              key={curr}
-              className="grow w-2/3 rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950"
+      <form action={dispatch} className="flex flex-col w-full items-center">
+        <div className="flex w-full">
+          <div className="w-full pt-[5px] pr-6">
+            <div className="grow w-full rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
+              <input
+                className="peer block w-2/5 rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] text-xl outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
+                id="surveyName"
+                type="surveyName"
+                name="surveyName"
+                placeholder="Create a New Survey"
+                required
+              />
+              <input
+                className="peer block w-full rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] mt-6 text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
+                id="description"
+                type="description"
+                name="description"
+                placeholder="Survey Description"
+              />
+            </div>
+            {questions.map(q => {
+              let curr = q.id
+              return (
+                <div
+                  key={curr}
+                  className="grow w-full rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const arr = questions.filter(q => {
+                          return q.id != curr
+                        })
+                        setQuestions(arr)
+                      }}
+                    >
+                      <Cross1Icon />
+                    </button>
+                  </div>
+                  <div className="flex">
+                    <input
+                      className="peer block w-2/5 rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] text-l outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
+                      id={'question ' + curr}
+                      type="question"
+                      name={'question name ' + curr}
+                      placeholder="Question Name"
+                      required
+                    />
+                    <div className="py-[9px] px-[9px]">
+                      <Select
+                        defaultValue="short"
+                        name={'question type ' + curr}
+                        required
+                        onValueChange={val => {
+                          const arr = questions.map(q => {
+                            if (q.id == curr) {
+                              return val == 'follow_up'
+                                ? ({
+                                    type: 'follow_up',
+                                    goal: 'goal',
+                                    id: q.id,
+                                    text: q.text
+                                  } as Question)
+                                : ({
+                                    type: 'informational',
+                                    id: q.id,
+                                    text: q.text
+                                  } as Question)
+                            } else {
+                              return q
+                            }
+                          })
+                          setQuestions(arr)
+                        }}
+                      >
+                        <SelectTrigger className="w-[200px] peer border-b-2 bg-zinc-50 py-[9px] dark:border-zinc-800 dark:bg-zinc-950">
+                          <SelectValue
+                            className="text-l outline-none placeholder:text-zinc-500"
+                            placeholder="Select Question Type"
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="informational">Short</SelectItem>
+                            <SelectItem value="follow_up">Long</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  {q.type == 'follow_up' ? (
+                    <div>
+                      <input
+                        className="peer block w-full rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] mt-6 text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
+                        id={'question answers ' + curr}
+                        type="description"
+                        name={'question answers ' + curr}
+                        placeholder="Question Answers"
+                        required
+                      />
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              )
+            })}
+            <button
+              type="button"
+              className="my-4 flex h-10 w-10 flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              onClick={() => {
+                setQuestions(questions => [
+                  ...questions,
+                  {
+                    type: 'informational',
+                    // TODO TEMP, FIX THIS LOL how to come up with new question ids
+                    id: '' + questions[questions.length - 1].id + '1',
+                    text: 'text'
+                  } as Question
+                ])
+              }}
             >
+              <PlusIcon />
+            </button>
+          </div>
+          <div className="sticky top-[100px] h-1/4 w-1/2 rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
+            <div className="flex pb-[40px]">
+              <div className="pr-2">Link: {window.location.href}</div>
               <button
-                type="button"
-                className="w-full flex justify-end"
                 onClick={() => {
-                  const arr = questions.filter(q => {
-                    return q.id != curr
-                  })
-                  setQuestions(arr)
+                  navigator.clipboard.writeText(window.location.href)
                 }}
               >
-                <Cross1Icon />
+                <CopyIcon />
               </button>
-              <div className="flex">
-                <input
-                  className="peer block w-2/5 rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] text-l outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                  id={'question ' + curr}
-                  type="question"
-                  name={'question name ' + curr}
-                  placeholder="Question Name"
-                  required
-                />
-                <div className="py-[9px] px-[9px]">
-                  <Select
-                    defaultValue="short"
-                    name={'question type ' + curr}
-                    onValueChange={val => {
-                      const arr = questions.map(q => {
-                        if (q.id == curr) {
-                          return val == 'follow_up'
-                            ? ({
-                                type: 'follow_up',
-                                goal: 'goal',
-                                id: q.id,
-                                text: q.text
-                              } as Question)
-                            : ({
-                                type: 'informational',
-                                id: q.id,
-                                text: q.text
-                              } as Question)
-                        } else {
-                          return q
-                        }
-                      })
-                      setQuestions(arr)
-                    }}
-                  >
-                    <SelectTrigger className="w-[200px] peer border-b-2 bg-zinc-50 py-[9px] dark:border-zinc-800 dark:bg-zinc-950">
-                      <SelectValue
-                        className="text-l outline-none placeholder:text-zinc-500"
-                        placeholder="Select Question Type"
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="informational">Short</SelectItem>
-                        <SelectItem value="follow_up">Long</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              {q.type == 'follow_up' ? (
-                <div>
-                  <input
-                    className="peer block w-full rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] mt-6 text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                    id={'question answers ' + curr}
-                    type="description"
-                    name={'question answers ' + curr}
-                    placeholder="Question Answers"
-                  />
-                </div>
-              ) : (
-                <></>
-              )}
             </div>
-          )
-        })}
-        <button
-          type="button"
-          className="my-4 flex h-10 w-10 flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          onClick={() => {
-            setQuestions(questions => [
-              ...questions,
-              {
-                type: 'informational',
-                // TEMP, FIX THIS LOL
-                id: '' + questions[questions.length - 1].id + '1',
-                text: 'text'
-              } as Question
-            ])
-          }}
-        >
-          <PlusIcon />
-        </button>
-        {/* complete button moved here temporarily bc it needs to be in the form lol */}
-        <CompleteButton />
-      </form>
-
-      <div className="sticky top-[100px] w-1/4 h-full rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
-        <div className="flex pb-[40px]">
-          <div className="pr-2">Link: {window.location.href}</div>
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href)
-            }}
-          >
-            <CopyIcon />
-          </button>
+            <CompleteButton />
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   )
 }
