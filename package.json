@@ -45,6 +45,7 @@
     "react-siriwave": "^3.1.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-textarea-autosize": "^8.5.3",
+    "react-use-audio-player": "^2.2.0",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sonner": "^1.5.0",

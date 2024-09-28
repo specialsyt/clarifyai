@@ -6,19 +6,14 @@ import { Survey } from '@/lib/types'
 import { PlayIcon, StopIcon } from '@radix-ui/react-icons'
 import { AudioVisualizer } from '@/components/audio-visualizer'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  createClient,
-  DeepgramClient,
-  ListenLiveClient,
-  LiveTranscriptionEvents
-} from '@deepgram/sdk'
 import { useLiveTranscription } from '@/lib/hooks/use-live-transcription'
-import { log } from 'console'
+import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
 
 export default function SessionPage() {
   const [survey, setSurvey] = useState<Survey | null>(null)
   const [currentQuestion, setCurrentQuestion] = useState<number | null>(null)
   const [finalTranscript, setFinalTranscript] = useState<string>('')
+  const { speakText } = useTextToSpeech('aura-helios-en')
   const {
     isRecording,
     transcript,
@@ -26,16 +21,10 @@ export default function SessionPage() {
     stopRecording,
     mediaRecorder,
     error
-  } = useLiveTranscription(setFinalTranscript)
-
-  const testSurvey: Survey = {
-    id: '1',
-    authorId: '1',
-    name: 'Test Survey',
-    questions: [
-      { id: '1', text: 'How was your day at camp?', type: 'informational' }
-    ]
-  }
+  } = useLiveTranscription(transcript => {
+    setFinalTranscript(transcript)
+    speakText(transcript)
+  })
 
   const handleClick = () => {
     if (isRecording) {
@@ -94,6 +83,8 @@ export default function SessionPage() {
         </h2>
         <p>{isRecording ? transcript : finalTranscript}</p>
       </div>
+
+      {/* <Button onClick={() => speakText(finalTranscript)}>Speak</Button> */}
 
       {!isRecording && finalTranscript && (
         <div className="mt-4">
