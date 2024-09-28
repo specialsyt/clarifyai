@@ -2,13 +2,13 @@
 
 import { PlusIcon } from '@radix-ui/react-icons'
 import SurveyItem from './survey-item'
-import { Survey } from '@/lib/types'
+import { Session, Survey } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
-export default function ProfileView() {
+export default function ProfileView({session}: {session: Session | null }) {
   const router = useRouter()
-  // TODO: Get user name
-  const user = 'George P. Burdell'
+  console.log(session);
+  const user = session?.user?.email
 
   // TODO: Get surveys
   const surveys: Survey[] = [

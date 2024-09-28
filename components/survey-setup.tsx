@@ -17,14 +17,14 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Question, Survey } from '@/lib/types'
+import { Question, Session, Survey } from '@/lib/types'
 
 interface Result {
   type: string
   resultCode: 'Valid Form' | 'Missing Fields' | 'Invalid Form'
 }
 
-export default function SurveySetup() {
+export default function SurveySetup({session}: {session: Session | null }) {
   const router = useRouter()
   const [result, dispatch] = useFormState(validateForm, undefined)
   const [questions, setQuestions] = useState<Question[]>([
@@ -41,8 +41,7 @@ export default function SurveySetup() {
     }
   ])
 
-  //TODO: How to get survey ID
-  const surveyId = 'abc'
+  const surveyId = crypto.randomUUID();
 
   async function validateForm(
     _prevState: Result | undefined,
@@ -69,8 +68,7 @@ export default function SurveySetup() {
 
       const newSurvey: Survey = {
         id: surveyId,
-        // TODO: How to get author ID
-        authorId: 'me',
+        authorId: session?.user?.id || '',
         name: formData.get('surveyName') as string,
         description: formData.get('description') as string,
         questions: questionsArr
@@ -236,7 +234,7 @@ export default function SurveySetup() {
             </div>
           </div>
           <div className="sticky top-[100px] w-1/2 h-fit rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
-            <div className="flex pb-[40px]">
+            {/* <div className="flex pb-[40px]">
               <div className="pr-2">
                 Link: {window.location.href}/{surveyId}
               </div>
@@ -247,9 +245,10 @@ export default function SurveySetup() {
               >
                 <CopyIcon />
               </button>
-            </div>
+            </div> */}
             <div className="py-30">
               <CompleteButton />
+              {/* TODO: pop up a modal/link after submit */}
             </div>
           </div>
         </div>
