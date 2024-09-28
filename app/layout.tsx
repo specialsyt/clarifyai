@@ -7,6 +7,7 @@ import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
+import { Analytics } from '@vercel/analytics/react'
 
 export const metadata = {
   metadataBase: process.env.VERCEL_URL
@@ -16,7 +17,8 @@ export const metadata = {
     default: 'Clarify AI',
     template: `%s - AI Semidirected Interviews`
   },
-  description: 'An AI tool for semidirected interviews built with Next.js and Vercel.',
+  description:
+    'An AI tool for semidirected interviews built with Next.js and Vercel.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
@@ -57,6 +59,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
           </div>
           <TailwindIndicator />
+          <Analytics />
         </Providers>
       </body>
     </html>
