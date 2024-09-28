@@ -12,12 +12,24 @@ export const authConfig = {
       const isOnLoginPage = nextUrl.pathname.startsWith('/login')
       const isOnSignupPage = nextUrl.pathname.startsWith('/signup')
 
+      // Add this section to define protected routes
+      const protectedRoutes = ['/new', '/profile', '/results']
+      const isOnProtectedRoute = protectedRoutes.some(route =>
+        nextUrl.pathname.startsWith(route)
+      )
+
       if (isLoggedIn) {
         if (isOnLoginPage || isOnSignupPage) {
           return Response.redirect(new URL('/', nextUrl))
         }
+        // Allow access to protected routes for logged-in users
+        return true
+      } else if (isOnProtectedRoute) {
+        // Redirect to login page if trying to access protected route while not logged in
+        return Response.redirect(new URL('/login', nextUrl))
       }
 
+      // Allow access to public routes for everyone
       return true
     },
     async jwt({ token, user }) {
