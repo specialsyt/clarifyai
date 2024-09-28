@@ -201,7 +201,7 @@ export default function SurveySetup({ session }: { session: Session }) {
                 </div>
               )
             })}
-            <div className="h-full flex justify-center">
+            <div className="flex justify-center">
               <button
                 type="button"
                 className="my-4 flex h-10 w-10 flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
