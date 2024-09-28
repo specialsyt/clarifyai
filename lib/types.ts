@@ -63,6 +63,11 @@ export type Survey = {
   questions: Question[]
 }
 
+export type LLMEvaluationResponse = {
+  text: string
+  indicies: number[]
+}
+
 export type QuestionResponse = {
   parentId: string
   id: string
