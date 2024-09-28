@@ -77,12 +77,14 @@ export async function generateLeadingQuestion(
 
   In answering the main question, the user is meant to consider the following goals.
 
-  The user has not answered the following questions:
+  The user has not met the following goal:
 
   ${mainQuestion.goals[goalLeft]}
 
-  Output a question that the user can answer to answer the goal. Make it concise and to the point,
-  while not being too vague.
+  The input below is the response they have originally given.
+  Output a question that the user can answer to answer the goal they have not met yet. 
+  Make it concise and to the point, while not being too vague.
+  Be specific to the goal that they have not met yet.
   
   Add <output_start> and <output_end> tags around your response.
   `
@@ -121,7 +123,7 @@ async function promptLLM(prompt: string, content: string) {
         ]
       }
     ],
-    temperature: 0
+    temperature: 0.5
   })
 
   if (!response.text) {
