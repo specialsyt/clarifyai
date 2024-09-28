@@ -4,6 +4,7 @@ import { Readable } from 'stream'
 import Groq from 'groq-sdk'
 import { randomUUID } from 'crypto'
 import { kv } from '@vercel/kv'
+import fs from 'fs'
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY
@@ -25,23 +26,6 @@ export async function transcribeAudio(audioBlob: Blob): Promise<string> {
       language: 'en',
       temperature: 0.0
     })
-
-    // Log the transcribed text
-    console.log(transcription.text)
-
     return transcription.text
-//   } catch (error) {
-//     console.error('Error transcribing audio:', error)
-//     throw new Error('Failed to transcribe audio')
-//   }
-}
-
-// Helper function to convert Blob to Base64
-async function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onloadend = () => resolve(reader.result as string)
-    reader.onerror = reject
-    reader.readAsDataURL(blob)
-  })
+  }
 }

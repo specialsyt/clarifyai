@@ -1,5 +1,9 @@
-import { redirect } from 'next/navigation'
+import SurveySetup from '@/components/survey-setup'
 
 export default async function NewPage() {
-  redirect('/')
+  return (
+    <main className="flex flex-col p-4">
+      <SurveySetup />
+    </main>
+  )
 }
