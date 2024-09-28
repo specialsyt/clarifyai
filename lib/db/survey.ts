@@ -3,7 +3,10 @@
 import { kv } from '@vercel/kv'
 import { Session, Survey } from '../types'
 
-export async function createSurvey(session: Session, survey: Survey) {
+export async function createSurvey(
+  session: Session,
+  survey: Survey
+): Promise<void> {
   const user = session?.user
   if (!user) {
     throw new Error('User not found')
@@ -26,6 +29,6 @@ export async function getSurveysByUser(userId: string): Promise<Survey[]> {
   return surveysByUser as Survey[]
 }
 
-export async function getSurvey(surveyId: string) {
+export async function getSurvey(surveyId: string): Promise<Survey | null> {
   return await kv.get('survey:' + surveyId)
 }
