@@ -2,18 +2,18 @@
 
 import { auth } from '@/auth'
 import ProfileView from '@/components/profile-view'
+import { getSurveysByUser } from '@/lib/db/survey'
 import { analyzeTranscript } from '@/lib/surveyAnalysis/llm'
-import { Session } from '@/lib/types'
+import { Session, Survey } from '@/lib/types'
 
 export default async function ProfilePage() {
   const session = (await auth()) as Session
-  // const results = await analyzeTranscript('I think the product is pretty good')
 
-  // console.log(results)
+  const surveys = await getSurveysByUser(session?.user?.id)
 
   return (
     <main className="flex flex-col p-4">
-      <ProfileView session={session} />
+      <ProfileView session={session} surveys={surveys} />
     </main>
   )
 }
