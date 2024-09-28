@@ -39,3 +39,9 @@ export interface User extends Record<string, any> {
   password: string
   salt: string
 }
+
+export interface QuestionType {
+  type: ValidQuestionTypes
+}
+
+export type ValidQuestionTypes = 'short' | 'long'
