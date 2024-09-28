@@ -2,14 +2,47 @@
 
 import { PlusIcon } from '@radix-ui/react-icons'
 import SurveyItem from './survey-item'
-import { redirect } from 'next/navigation'
 import { Survey } from '@/lib/types'
+import { useRouter } from 'next/navigation'
 
 export default function ProfileView() {
+  const router = useRouter()
+  // TODO: Get user name
   const user = 'George P. Burdell'
 
-  // TODO
-  const surveys: Survey[] = []
+  // TODO: Get surveys
+  const surveys: Survey[] = [
+    {
+      id: 'fake id',
+      name: 'fake name',
+      authorId: 'fake author',
+      description: 'fake description',
+      questions: [
+        {
+          id: 'qid 1',
+          text: 'fake question 1',
+          type: 'follow_up',
+          goal: 'fake goal'
+        },
+        { id: 'qid 2', text: 'fake question 2', type: 'informational' }
+      ]
+    },
+    {
+      id: 'fake id',
+      name: 'fake name',
+      authorId: 'fake author',
+      description: '',
+      questions: [
+        {
+          id: 'qid 1',
+          text: 'fake question 1',
+          type: 'follow_up',
+          goal: 'fake goal'
+        },
+        { id: 'qid 2', text: 'fake question 2', type: 'informational' }
+      ]
+    }
+  ]
 
   return (
     <div className="flex grow">
@@ -21,16 +54,15 @@ export default function ProfileView() {
           {surveys.map(s => {
             return <SurveyItem surveyInfo={s} />
           })}
-          <div className="w-1/5 m-[20px] items-center justify-center">
+          <div className="w-1/5 m-[20px] flex">
             <button
               type="button"
-              className="my-4 flex grow items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="my-4 flex grow items-center justify-center rounded-md  p-2 text-sm font-semibold text-zinc-100 bg-zinc-900 hover:bg-zinc-600"
               onClick={() => {
-                // todo fix this the redirect is not working :(
-                console.log("clicked!")
-                redirect('/')
+                router.push('/new')
               }}
             >
+              <div className="text-l pr-1 semibold">Create New Survey</div>
               <PlusIcon />
             </button>
           </div>
