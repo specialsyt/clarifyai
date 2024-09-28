@@ -4,10 +4,9 @@ import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Survey } from '@/lib/types'
 import { PlayIcon, StopIcon } from '@radix-ui/react-icons'
-import { LiveAudioVisualizer } from 'react-audio-visualize'
 import { AudioVisualizer } from '@/components/audio-visualizer'
 import { motion, AnimatePresence } from 'framer-motion'
-import { transcribeAudio } from '@/lib/transcription/actions'
+import { createClient, ListenLiveClient } from '@deepgram/sdk'
 
 export default function CampFeedback() {
   const [isRecording, setIsRecording] = useState(false)
@@ -21,6 +20,10 @@ export default function CampFeedback() {
   const analyserRef = useRef<AnalyserNode | null>(null)
   const animationRef = useRef<number | null>(null)
 
+  const [transcriptionSocket, setTranscriptionSocket] =
+    useState<ListenLiveClient | null>(null)
+  const [transcript, setTranscript] = useState<string>('')
+
   const testSurvey: Survey = {
     id: '1',
     authorId: '1',
@@ -32,9 +35,40 @@ export default function CampFeedback() {
 
   useEffect(() => {
     setSurvey(testSurvey)
+    const deepgramClient = createClient(
+      process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY
+    )
+    const socket = deepgramClient.listen.live({
+      model: 'nova',
+      smart_format: true
+    })
+    setTranscriptionSocket(socket)
   }, [])
 
   const startRecording = async () => {
+    if (transcriptionSocket) {
+      transcriptionSocket.on('open', async () => {
+        console.log('client: connected to websocket')
+
+        transcriptionSocket.on('Results', data => {
+          console.log(data)
+
+          const newTranscript = data.channel.alternatives[0].transcript
+
+          if (newTranscript !== '') {
+            setTranscript(newTranscript)
+          }
+        })
+
+        transcriptionSocket.on('error', e => console.error(e))
+
+        transcriptionSocket.on('warning', e => console.warn(e))
+
+        transcriptionSocket.on('Metadata', e => console.log(e))
+
+        transcriptionSocket.on('close', e => console.log(e))
+      })
+    }
     chunksRef.current = []
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -53,19 +87,10 @@ export default function CampFeedback() {
         if (event.data.size > 0) {
           chunksRef.current.push(event.data)
         }
+        transcriptionSocket?.send(event.data)
       }
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
-
-        const transcriptionResponse = await fetch(
-          `${window.location.pathname}/audioUpload`,
-          {
-            method: 'POST',
-            body: audioBlob
-          }
-        )
-        const transcription = await transcriptionResponse.json()
-        console.log(transcription)
         const audioUrl = URL.createObjectURL(audioBlob)
         setAudioURL(audioUrl)
         if (animationRef.current) {
@@ -143,6 +168,11 @@ export default function CampFeedback() {
           Your browser does not support the audio element.
         </audio>
       )}
+
+      <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-lg w-full text-slate-700">
+        <h2 className="text-lg font-semibold mb-2">Transcript:</h2>
+        <p>{transcript}</p>
+      </div>
     </div>
   )
 }
