@@ -18,30 +18,21 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Question, Session, Survey } from '@/lib/types'
+import { createSurvey, getSurveysByUser } from '@/lib/db/survey'
 
 interface Result {
   type: string
   resultCode: 'Valid Form' | 'Missing Fields' | 'Invalid Form'
 }
 
-export default function SurveySetup({session}: {session: Session | null }) {
+export default function SurveySetup({ session }: { session: Session }) {
+  const user = session.user
+
   const router = useRouter()
   const [result, dispatch] = useFormState(validateForm, undefined)
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      type: 'follow_up',
-      goal: 'goal',
-      id: 'abcdef123',
-      text: 'text'
-    },
-    {
-      type: 'informational',
-      id: 'abcdef234',
-      text: 'text'
-    }
-  ])
+  const [questions, setQuestions] = useState<Question[]>([])
 
-  const surveyId = crypto.randomUUID();
+  const surveyId = crypto.randomUUID()
 
   async function validateForm(
     _prevState: Result | undefined,
@@ -68,14 +59,13 @@ export default function SurveySetup({session}: {session: Session | null }) {
 
       const newSurvey: Survey = {
         id: surveyId,
-        authorId: session?.user?.id || '',
+        authorId: session.user.id,
         name: formData.get('surveyName') as string,
         description: formData.get('description') as string,
         questions: questionsArr
       }
 
-      //TODO: Store the new survey somewhere
-      console.log(newSurvey)
+      await createSurvey(session, newSurvey)
 
       return {
         type: 'success',
@@ -95,10 +85,10 @@ export default function SurveySetup({session}: {session: Session | null }) {
   useEffect(() => {
     if (result) {
       if (result.type === 'error') {
-        toast.error(getMessageFromCode(result.resultCode))
+        toast.error('Invalid form, please try again!')
       } else {
-        toast.success(getMessageFromCode(result.resultCode))
-        router.refresh()
+        toast.success('Survey created!')
+        router.push(`/results/${surveyId}`)
       }
     }
   }, [result, router])
@@ -222,8 +212,7 @@ export default function SurveySetup({session}: {session: Session | null }) {
                     ...questions,
                     {
                       type: 'informational',
-                      // TODO How to come up with new question IDs
-                      id: '' + questions[questions.length - 1].id + '1',
+                      id: crypto.randomUUID(),
                       text: 'text'
                     } as Question
                   ])
