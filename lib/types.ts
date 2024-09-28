@@ -48,12 +48,12 @@ export type InformationalQuestion = QuestionBase & {
   type: 'informational'
 }
 
-export type FollowUpQuestion = QuestionBase & {
+export type EnhancedQuestion = QuestionBase & {
   type: 'follow_up'
-  goal: string
+  goals: string[]
 }
 
-export type Question = InformationalQuestion | FollowUpQuestion
+export type Question = InformationalQuestion | EnhancedQuestion
 
 export type Survey = {
   id: string

@@ -42,7 +42,9 @@ export default function SurveySetup({ session }: { session: Session }) {
             id: q.id,
             text: formData.get('question name ' + q.id) as string,
             type: 'follow_up',
-            goal: formData.get('question answers ' + q.id) as string
+            goals: (formData.get('question answers ' + q.id) as string).split(
+              ','
+            )
           })
         } else {
           questionsArr.push({
@@ -86,7 +88,7 @@ export default function SurveySetup({ session }: { session: Session }) {
         router.push(`/results/${surveyId}`)
       }
     }
-  }, [result, router])
+  }, [result, router, questions])
 
   return (
     <div className="flex">
@@ -152,7 +154,8 @@ export default function SurveySetup({ session }: { session: Session }) {
                                     type: 'follow_up',
                                     goal: 'goal',
                                     id: q.id,
-                                    text: q.text
+                                    text: q.text,
+                                    goals: []
                                   } as Question)
                                 : ({
                                     type: 'informational',
@@ -188,7 +191,7 @@ export default function SurveySetup({ session }: { session: Session }) {
                         id={'question answers ' + curr}
                         type="description"
                         name={'question answers ' + curr}
-                        placeholder="Question Answers"
+                        placeholder="Comma Delimited Goals"
                         required
                       />
                     </div>
