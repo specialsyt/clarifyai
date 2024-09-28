@@ -39,9 +39,25 @@ export interface User extends Record<string, any> {
   password: string
   salt: string
 }
-
-export interface QuestionType {
-  type: ValidQuestionTypes
+export type QuestionBase = {
+  id: string
+  text: string
 }
 
-export type ValidQuestionTypes = 'short' | 'long'
+export type InformationalQuestion = QuestionBase & {
+  type: 'informational'
+}
+
+export type FollowUpQuestion = QuestionBase & {
+  type: 'follow_up'
+  goal: string
+}
+
+export type Question = InformationalQuestion | FollowUpQuestion
+
+export type Survey = {
+  id: string
+  authorId: string
+  name: string
+  questions: Question[]
+}
