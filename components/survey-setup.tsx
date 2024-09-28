@@ -4,21 +4,19 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from './ui/icons'
-import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import { PlusIcon, Cross1Icon, CopyIcon } from '@radix-ui/react-icons'
+import { PlusIcon, Cross1Icon } from '@radix-ui/react-icons'
 
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
 import { Question, Session, Survey } from '@/lib/types'
-import { createSurvey, getSurveysByUser } from '@/lib/db/survey'
+import { createSurvey } from '@/lib/db/survey'
 
 interface Result {
   type: string
@@ -26,13 +24,11 @@ interface Result {
 }
 
 export default function SurveySetup({ session }: { session: Session }) {
-  const user = session.user
-
   const router = useRouter()
   const [result, dispatch] = useFormState(validateForm, undefined)
   const [questions, setQuestions] = useState<Question[]>([])
 
-  const surveyId = crypto.randomUUID()
+  const [surveyId, setSurveyId] = useState(crypto.randomUUID())
 
   async function validateForm(
     _prevState: Result | undefined,
@@ -66,7 +62,6 @@ export default function SurveySetup({ session }: { session: Session }) {
       }
 
       await createSurvey(session, newSurvey)
-
       return {
         type: 'success',
         resultCode: 'Valid Form'
@@ -223,21 +218,8 @@ export default function SurveySetup({ session }: { session: Session }) {
             </div>
           </div>
           <div className="sticky top-[100px] w-1/2 h-fit rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
-            {/* <div className="flex pb-[40px]">
-              <div className="pr-2">
-                Link: {window.location.href}/{surveyId}
-              </div>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href)
-                }}
-              >
-                <CopyIcon />
-              </button>
-            </div> */}
             <div className="py-30">
               <CompleteButton />
-              {/* TODO: pop up a modal/link after submit */}
             </div>
           </div>
         </div>

@@ -32,3 +32,7 @@ export async function getSurveysByUser(userId: string): Promise<Survey[]> {
 export async function getSurvey(surveyId: string): Promise<Survey | null> {
   return await kv.get('survey:' + surveyId)
 }
+
+export async function deleteSurvey(surveyId: string): Promise<void> {
+    await kv.del('survey:' + surveyId)
+  }

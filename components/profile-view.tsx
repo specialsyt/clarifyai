@@ -5,44 +5,15 @@ import SurveyItem from './survey-item'
 import { Session, Survey } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
-export default function ProfileView({session}: {session: Session | null }) {
+export default function ProfileView({
+  session,
+  surveys
+}: {
+  session: Session | null
+  surveys: Survey[]
+}) {
   const router = useRouter()
-  console.log(session);
   const user = session?.user?.email
-
-  // TODO: Get surveys
-  const surveys: Survey[] = [
-    {
-      id: 'fake id',
-      name: 'fake name',
-      authorId: 'fake author',
-      description: 'fake description',
-      questions: [
-        {
-          id: 'qid 1',
-          text: 'fake question 1',
-          type: 'follow_up',
-          goal: 'fake goal'
-        },
-        { id: 'qid 2', text: 'fake question 2', type: 'informational' }
-      ]
-    },
-    {
-      id: 'fake id',
-      name: 'fake name',
-      authorId: 'fake author',
-      description: '',
-      questions: [
-        {
-          id: 'qid 1',
-          text: 'fake question 1',
-          type: 'follow_up',
-          goal: 'fake goal'
-        },
-        { id: 'qid 2', text: 'fake question 2', type: 'informational' }
-      ]
-    }
-  ]
 
   return (
     <div className="flex grow">
