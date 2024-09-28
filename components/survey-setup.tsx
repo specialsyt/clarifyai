@@ -1,7 +1,6 @@
 'use client'
 
 import { useFormState, useFormStatus } from 'react-dom'
-import { authenticate } from '@/app/login/actions'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from './ui/icons'
@@ -18,12 +17,16 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Question } from '@/lib/types'
+import { Question, Survey } from '@/lib/types'
+
+interface Result {
+  type: string
+  resultCode: 'Valid Form' | 'Missing Fields' | 'Invalid Form'
+}
 
 export default function SurveySetup() {
   const router = useRouter()
-  const [result, dispatch] = useFormState(authenticate, undefined)
-  console.log(result);
+  const [result, dispatch] = useFormState(validateForm, undefined)
   const [questions, setQuestions] = useState<Question[]>([
     {
       type: 'follow_up',
@@ -37,6 +40,56 @@ export default function SurveySetup() {
       text: 'text'
     }
   ])
+
+  async function validateForm(
+    _prevState: Result | undefined,
+    formData: FormData
+  ): Promise<Result | undefined> {
+    try {
+      let questionsArr: Question[] = []
+      questions.forEach(q => {
+        if (formData.get('question type ' + q.id) == 'follow_up') {
+          questionsArr.push({
+            id: q.id,
+            text: formData.get('question name ' + q.id) as string,
+            type: 'follow_up',
+            goal: formData.get('question answers ' + q.id) as string
+          })
+        } else {
+          questionsArr.push({
+            id: q.id,
+            text: formData.get('question name ' + q.id) as string,
+            type: 'informational'
+          })
+        }
+      })
+
+      const newSurvey: Survey = {
+        // TODO
+        id: 'abc',
+        authorId: 'me',
+        name: formData.get('surveyName') as string,
+        description: formData.get('description') as string,
+        questions: questionsArr
+      }
+
+      //TODO: store the form somewhere
+      console.log(newSurvey)
+
+      return {
+        type: 'success',
+        resultCode: 'Valid Form'
+      }
+    } catch (error) {
+      if (error) {
+        console.log(error)
+        return {
+          type: 'error',
+          resultCode: 'Invalid Form'
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     if (result) {
@@ -93,13 +146,14 @@ export default function SurveySetup() {
                   className="peer block w-2/5 rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] text-l outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
                   id={'question ' + curr}
                   type="question"
-                  name={'question ' + curr}
+                  name={'question name ' + curr}
                   placeholder="Question Name"
                   required
                 />
                 <div className="py-[9px] px-[9px]">
                   <Select
                     defaultValue="short"
+                    name={'question type ' + curr}
                     onValueChange={val => {
                       const arr = questions.map(q => {
                         if (q.id == curr) {
@@ -137,13 +191,13 @@ export default function SurveySetup() {
                   </Select>
                 </div>
               </div>
-              {q.type == 'informational' ? (
+              {q.type == 'follow_up' ? (
                 <div>
                   <input
                     className="peer block w-full rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] mt-6 text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                    id={'question ' + curr + ' answers'}
+                    id={'question answers ' + curr}
                     type="description"
-                    name={'question ' + curr + ' answers'}
+                    name={'question answers ' + curr}
                     placeholder="Question Answers"
                   />
                 </div>
@@ -162,7 +216,7 @@ export default function SurveySetup() {
               {
                 type: 'informational',
                 // TEMP, FIX THIS LOL
-                id: "" + questions[questions.length - 1].id + "1",
+                id: '' + questions[questions.length - 1].id + '1',
                 text: 'text'
               } as Question
             ])
