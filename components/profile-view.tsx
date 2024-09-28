@@ -52,7 +52,7 @@ export default function ProfileView({session}: {session: Session | null }) {
         {surveys.length == 0 ? <div>No Surveys Yet</div> : <></>}
         <div className="flex items-center flex-wrap pt-20">
           {surveys.map(s => {
-            return <SurveyItem surveyInfo={s} />
+            return <SurveyItem key={s.id} surveyInfo={s} />
           })}
           <div className="w-1/5 m-[20px] flex">
             <button
