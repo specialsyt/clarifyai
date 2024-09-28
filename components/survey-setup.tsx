@@ -41,6 +41,9 @@ export default function SurveySetup() {
     }
   ])
 
+  //TODO: How to get survey ID
+  const surveyId = 'abc'
+
   async function validateForm(
     _prevState: Result | undefined,
     formData: FormData
@@ -65,15 +68,15 @@ export default function SurveySetup() {
       })
 
       const newSurvey: Survey = {
-        // TODO
-        id: 'abc',
+        id: surveyId,
+        // TODO: How to get author ID
         authorId: 'me',
         name: formData.get('surveyName') as string,
         description: formData.get('description') as string,
         questions: questionsArr
       }
 
-      //TODO: store the form somewhere
+      //TODO: Store the new survey somewhere
       console.log(newSurvey)
 
       return {
@@ -212,27 +215,31 @@ export default function SurveySetup() {
                 </div>
               )
             })}
-            <button
-              type="button"
-              className="my-4 flex h-10 w-10 flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-              onClick={() => {
-                setQuestions(questions => [
-                  ...questions,
-                  {
-                    type: 'informational',
-                    // TODO TEMP, FIX THIS LOL how to come up with new question ids
-                    id: '' + questions[questions.length - 1].id + '1',
-                    text: 'text'
-                  } as Question
-                ])
-              }}
-            >
-              <PlusIcon />
-            </button>
+            <div className="h-full flex justify-center">
+              <button
+                type="button"
+                className="my-4 flex h-10 w-10 flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                onClick={() => {
+                  setQuestions(questions => [
+                    ...questions,
+                    {
+                      type: 'informational',
+                      // TODO How to come up with new question IDs
+                      id: '' + questions[questions.length - 1].id + '1',
+                      text: 'text'
+                    } as Question
+                  ])
+                }}
+              >
+                <PlusIcon />
+              </button>
+            </div>
           </div>
-          <div className="sticky top-[100px] h-1/4 w-1/2 rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
+          <div className="sticky top-[100px] w-1/2 h-fit rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
             <div className="flex pb-[40px]">
-              <div className="pr-2">Link: {window.location.href}</div>
+              <div className="pr-2">
+                Link: {window.location.href}/{surveyId}
+              </div>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href)
@@ -241,7 +248,9 @@ export default function SurveySetup() {
                 <CopyIcon />
               </button>
             </div>
-            <CompleteButton />
+            <div className="py-30">
+              <CompleteButton />
+            </div>
           </div>
         </div>
       </form>
@@ -255,7 +264,7 @@ function CompleteButton() {
   return (
     <button
       type="submit"
-      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
       aria-disabled={pending}
     >
       {pending ? <IconSpinner /> : 'Complete'}
