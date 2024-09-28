@@ -4,6 +4,9 @@ import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Survey } from '@/lib/types'
 import { PlayIcon, StopIcon } from '@radix-ui/react-icons'
+import { LiveAudioVisualizer } from 'react-audio-visualize'
+import { AudioVisualizer } from '@/components/audio-visualizer'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function CampFeedback() {
   const [isRecording, setIsRecording] = useState(false)
@@ -61,59 +64,9 @@ export default function CampFeedback() {
       mediaRecorder.start()
       setIsRecording(true)
       setCurrentQuestion(0)
-      drawWaveform()
     } catch (error) {
       console.error('Error accessing microphone:', error)
     }
-  }
-
-  const drawWaveform = () => {
-    const canvas = canvasRef.current
-    const analyser = analyserRef.current
-    if (!canvas || !analyser) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const bufferLength = analyser.frequencyBinCount
-    const dataArray = new Uint8Array(bufferLength)
-
-    const draw = () => {
-      const width = canvas.width
-      const height = canvas.height
-
-      analyser.getByteTimeDomainData(dataArray)
-
-      ctx.fillStyle = 'rgb(200, 200, 200)'
-      ctx.fillRect(0, 0, width, height)
-
-      ctx.lineWidth = 2
-      ctx.strokeStyle = 'rgb(0, 0, 0)'
-      ctx.beginPath()
-
-      const sliceWidth = (width * 1.0) / bufferLength
-      let x = 0
-
-      for (let i = 0; i < bufferLength; i++) {
-        const v = dataArray[i] / 128.0
-        const y = (v * height) / 2
-
-        if (i === 0) {
-          ctx.moveTo(x, y)
-        } else {
-          ctx.lineTo(x, y)
-        }
-
-        x += sliceWidth
-      }
-
-      ctx.lineTo(canvas.width, canvas.height / 2)
-      ctx.stroke()
-
-      animationRef.current = requestAnimationFrame(draw)
-    }
-
-    draw()
   }
 
   const stopRecording = () => {
@@ -135,22 +88,45 @@ export default function CampFeedback() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
       <h1 className="text-2xl font-bold mb-8">{survey?.name}</h1>
-      {currentQuestion !== null && (
+      {currentQuestion !== null ? (
         <div className="mb-8 text-xl">
           {survey?.questions[currentQuestion].text}
         </div>
+      ) : (
+        <div className="mb-8 text-xl">Text</div>
       )}
-      <Button
-        variant="outline"
-        size="lg"
-        className="w-24 h-24 rounded-full"
-        onClick={handleClick}
+      <motion.div
+        animate={{
+          width: isRecording ? 200 : 96,
+          height: 96
+        }}
+        transition={{ duration: 0.3 }}
       >
-        {isRecording ? <StopIcon /> : <PlayIcon />}
-      </Button>
-
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full h-full rounded-full transition-all duration-300 relative overflow-hidden"
+          onClick={handleClick}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isRecording ? 'visualizer' : 'play'}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              {isRecording ? (
+                <AudioVisualizer mediaRecorder={mediaRecorderRef.current} />
+              ) : (
+                <PlayIcon className="w-12 h-12" />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </Button>
+      </motion.div>
       <canvas ref={canvasRef} width="300" height="100" className="mt-4" />
-
       {audioURL && (
         <audio className="mt-4" controls src={audioURL}>
           Your browser does not support the audio element.
