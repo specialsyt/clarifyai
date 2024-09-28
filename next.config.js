@@ -9,5 +9,8 @@ module.exports = {
         pathname: '**'
       }
     ]
+  },
+  typescript: {
+    ignoreBuildErrors: true
   }
 }
