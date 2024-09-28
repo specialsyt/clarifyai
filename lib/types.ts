@@ -62,3 +62,22 @@ export type Survey = {
   description: string
   questions: Question[]
 }
+
+export type QuestionResponse = {
+  parentId: string
+  id: string
+  question: string
+  response: string
+}
+
+export type SurveyResponse = {
+  id: string
+  surveyId: string
+  userId: string
+  responses: QuestionResponse[]
+}
+
+export enum TranscriptRole {
+  PARTICIPANT = 'participant',
+  INTERVIEWER = 'interviewer'
+}
