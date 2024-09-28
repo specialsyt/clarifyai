@@ -15,6 +15,7 @@ import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 import { Session } from '@/lib/types'
+import { HomeButton } from './home-button'
 
 async function UserOrLogin() {
   const session = (await auth()) as Session
@@ -25,7 +26,7 @@ async function UserOrLogin() {
           <SidebarMobile>
             <ChatHistory userId={session.user.id} />
           </SidebarMobile>
-          <SidebarToggle />
+          <HomeButton />
         </>
       ) : (
         <Link href="/new" rel="nofollow">
@@ -58,14 +59,14 @@ export function Header() {
       <div className="flex items-center justify-end space-x-2">
         <a
           target="_blank"
-          href="https://github.com/vercel/nextjs-ai-chatbot/"
+          href="https://github.com/specialsyt/clarifyai"
           rel="noopener noreferrer"
           className={cn(buttonVariants({ variant: 'outline' }))}
         >
           <IconGitHub />
           <span className="hidden ml-2 md:flex">GitHub</span>
         </a>
-        <a
+        {/* <a
           href="https://vercel.com/templates/Next.js/nextjs-ai-chatbot"
           target="_blank"
           className={cn(buttonVariants())}
@@ -73,7 +74,7 @@ export function Header() {
           <IconVercel className="mr-2" />
           <span className="hidden sm:block">Deploy to Vercel</span>
           <span className="sm:hidden">Deploy</span>
-        </a>
+        </a> */}
       </div>
     </header>
   )

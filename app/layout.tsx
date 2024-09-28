@@ -16,7 +16,8 @@ export const metadata = {
     default: 'Clarify AI',
     template: `%s - AI Semidirected Interviews`
   },
-  description: 'An AI tool for semidirected interviews built with Next.js and Vercel.',
+  description:
+    'An AI tool for semidirected interviews built with Next.js and Vercel.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
@@ -52,11 +53,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen bg-muted/50">
             <Header />
-            <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
+            <main className="flex-1">{children}</main>
+            <footer className="text-center py-8 border-t border-gray-200">
+              <p className="text-gray-600">
+                &copy; {new Date().getFullYear()} Clarify AI. All rights
+                reserved.
+              </p>
+            </footer>
           </div>
-          <TailwindIndicator />
         </Providers>
       </body>
     </html>
