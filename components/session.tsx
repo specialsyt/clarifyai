@@ -23,6 +23,7 @@ export default function Session({ survey }: { survey: Survey }) {
     currentQuestion,
     setCurrentQuestionResponse,
     addFollowUpQuestion,
+    parentQuestion,
     nextQuestion,
     getTranscript,
     startSurvey,
