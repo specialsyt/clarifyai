@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react'
-import {
-  QuestionResponse,
-  Survey,
-  SurveyResponse,
-  QuestionBase
-} from '../types'
+import { QuestionResponse, Survey, SurveyResponse, Question } from '../types'
 import { makeTranscript } from '../utils'
 import { saveSurveyResponse } from '../db/survey'
 import { useAuthId } from './use-user-auth'
 
 export function useSurveyController(survey: Survey) {
-  const [currentQuestion, setCurrentQuestion] = useState<QuestionBase | null>(
-    null
-  )
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
+  const [parentQuestion, setParentQuestion] = useState<Question | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(-1)
   const [responses, setResponses] = useState<QuestionResponse[]>([])
   const [done, setDone] = useState(false)
@@ -34,7 +28,9 @@ export function useSurveyController(survey: Survey) {
   const addFollowUpQuestion = (question: string) => {
     setCurrentQuestion({
       id: crypto.randomUUID(),
-      text: question
+      text: question,
+      type: 'child',
+      parentId: survey.questions[currentQuestionIndex].id
     })
   }
 
@@ -52,6 +48,7 @@ export function useSurveyController(survey: Survey) {
 
   useEffect(() => {
     setCurrentQuestion(survey.questions[currentQuestionIndex])
+    setParentQuestion(survey.questions[currentQuestionIndex])
   }, [currentQuestionIndex])
 
   const saveSurvey = async () => {
@@ -77,6 +74,7 @@ export function useSurveyController(survey: Survey) {
 
   return {
     currentQuestion: currentQuestion?.text,
+    parentQuestion: parentQuestion,
     setCurrentQuestionResponse,
     addFollowUpQuestion,
     nextQuestion,
