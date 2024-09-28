@@ -59,5 +59,6 @@ export type Survey = {
   id: string
   authorId: string
   name: string
+  description: string
   questions: Question[]
 }
