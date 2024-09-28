@@ -55,10 +55,46 @@ export async function analyzeTranscript(
     array[index] -= 1
   })
 
+  console.log(indicies)
+
   return {
     text,
     indicies
   }
+}
+
+export async function generateLeadingQuestion(
+  transcript: string,
+  mainQuestion: EnhancedQuestion,
+  goalLeft: number
+) {
+  'use server'
+
+  const prompt = `
+  You are a survey analysis bot. You are given a transcript of a conversation between a user and an AI chatbot.
+  You need to analyze the transcript and provide a summary of the conversation.
+  The user is meant to answer the following main question: ${mainQuestion.text}
+
+  In answering the main question, the user is meant to consider the following goals.
+
+  The user has not answered the following questions:
+
+  ${mainQuestion.goals[goalLeft]}
+
+  Output a question that the user can answer to answer the goal. Make it concise and to the point,
+  while not being too vague.
+  
+  Add <output_start> and <output_end> tags around your response.
+  `
+
+  const content = transcript
+  const text = await promptLLM(prompt, content)
+
+  const outputStart = text.indexOf('<output_start>')
+  const outputEnd = text.indexOf('<output_end>')
+  const output = text.slice(outputStart + 14, outputEnd)
+
+  return output
 }
 
 async function promptLLM(prompt: string, content: string) {
