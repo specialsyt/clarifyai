@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Survey } from '@/lib/types'
 import { PlayIcon, StopIcon } from '@radix-ui/react-icons'
+import { transcribeAudio } from '@/lib/transcription/actions'
 
 export default function CampFeedback() {
   const [isRecording, setIsRecording] = useState(false)
@@ -37,8 +38,18 @@ export default function CampFeedback() {
           chunksRef.current.push(event.data)
         }
       }
-      mediaRecorder.onstop = () => {
+      mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
+
+        const transcriptionResponse = await fetch(
+          `${window.location.pathname}/audioUpload`,
+          {
+            method: 'POST',
+            body: audioBlob
+          }
+        )
+        const transcription = await transcriptionResponse.json()
+        console.log(transcription)
         const audioUrl = URL.createObjectURL(audioBlob)
         setAudioURL(audioUrl)
       }
