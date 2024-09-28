@@ -67,3 +67,22 @@ export type LLMEvaluationResponse = {
   text: string
   indicies: number[]
 }
+
+export type QuestionResponse = {
+  parentId: string
+  id: string
+  question: string
+  response: string
+}
+
+export type SurveyResponse = {
+  id: string
+  surveyId: string
+  userId: string
+  responses: QuestionResponse[]
+}
+
+export enum TranscriptRole {
+  PARTICIPANT = 'participant',
+  INTERVIEWER = 'interviewer'
+}

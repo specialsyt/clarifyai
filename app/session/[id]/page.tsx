@@ -11,7 +11,7 @@ export default async function SessionPage({
   const survey = await getSurvey(params.id)
 
   return (
-    <main className="flex flex-col p-4">
+    <main className="flex flex-col">
       <Session survey={survey!} />
     </main>
   )
