@@ -14,7 +14,6 @@ export default function SurveyItem({ surveyInfo }: SurveyItemProps) {
     <button
       className="w-1/5 m-[20px] aspect-square bg-zinc-200 hover:bg-zinc-100"
       onClick={() => {
-        //TODO: Figure out path
         router.push('/results/' + surveyInfo.id)
       }}
     >

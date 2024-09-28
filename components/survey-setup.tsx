@@ -4,45 +4,31 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from './ui/icons'
-import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import { PlusIcon, Cross1Icon, CopyIcon } from '@radix-ui/react-icons'
+import { PlusIcon, Cross1Icon } from '@radix-ui/react-icons'
 
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Question, Survey } from '@/lib/types'
+import { Question, Session, Survey } from '@/lib/types'
+import { createSurvey } from '@/lib/db/survey'
 
 interface Result {
   type: string
   resultCode: 'Valid Form' | 'Missing Fields' | 'Invalid Form'
 }
 
-export default function SurveySetup() {
+export default function SurveySetup({ session }: { session: Session }) {
   const router = useRouter()
   const [result, dispatch] = useFormState(validateForm, undefined)
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      type: 'follow_up',
-      goal: 'goal',
-      id: 'abcdef123',
-      text: 'text'
-    },
-    {
-      type: 'informational',
-      id: 'abcdef234',
-      text: 'text'
-    }
-  ])
+  const [questions, setQuestions] = useState<Question[]>([])
 
-  //TODO: How to get survey ID
-  const surveyId = 'abc'
+  const [surveyId, setSurveyId] = useState(crypto.randomUUID())
 
   async function validateForm(
     _prevState: Result | undefined,
@@ -69,16 +55,13 @@ export default function SurveySetup() {
 
       const newSurvey: Survey = {
         id: surveyId,
-        // TODO: How to get author ID
-        authorId: 'me',
+        authorId: session.user.id,
         name: formData.get('surveyName') as string,
         description: formData.get('description') as string,
         questions: questionsArr
       }
 
-      //TODO: Store the new survey somewhere
-      console.log(newSurvey)
-
+      await createSurvey(session, newSurvey)
       return {
         type: 'success',
         resultCode: 'Valid Form'
@@ -97,10 +80,10 @@ export default function SurveySetup() {
   useEffect(() => {
     if (result) {
       if (result.type === 'error') {
-        toast.error(getMessageFromCode(result.resultCode))
+        toast.error('Invalid form, please try again!')
       } else {
-        toast.success(getMessageFromCode(result.resultCode))
-        router.refresh()
+        toast.success('Survey created!')
+        router.push(`/results/${surveyId}`)
       }
     }
   }, [result, router])
@@ -224,8 +207,7 @@ export default function SurveySetup() {
                     ...questions,
                     {
                       type: 'informational',
-                      // TODO How to come up with new question IDs
-                      id: '' + questions[questions.length - 1].id + '1',
+                      id: crypto.randomUUID(),
                       text: 'text'
                     } as Question
                   ])
@@ -236,18 +218,6 @@ export default function SurveySetup() {
             </div>
           </div>
           <div className="sticky top-[100px] w-1/2 h-fit rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
-            <div className="flex pb-[40px]">
-              <div className="pr-2">
-                Link: {window.location.href}/{surveyId}
-              </div>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href)
-                }}
-              >
-                <CopyIcon />
-              </button>
-            </div>
             <div className="py-30">
               <CompleteButton />
             </div>

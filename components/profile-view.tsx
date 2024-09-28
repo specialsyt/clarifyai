@@ -2,47 +2,18 @@
 
 import { PlusIcon } from '@radix-ui/react-icons'
 import SurveyItem from './survey-item'
-import { Survey } from '@/lib/types'
+import { Session, Survey } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
-export default function ProfileView() {
+export default function ProfileView({
+  session,
+  surveys
+}: {
+  session: Session | null
+  surveys: Survey[]
+}) {
   const router = useRouter()
-  // TODO: Get user name
-  const user = 'George P. Burdell'
-
-  // TODO: Get surveys
-  const surveys: Survey[] = [
-    {
-      id: 'fake id',
-      name: 'fake name',
-      authorId: 'fake author',
-      description: 'fake description',
-      questions: [
-        {
-          id: 'qid 1',
-          text: 'fake question 1',
-          type: 'follow_up',
-          goal: 'fake goal'
-        },
-        { id: 'qid 2', text: 'fake question 2', type: 'informational' }
-      ]
-    },
-    {
-      id: 'fake id',
-      name: 'fake name',
-      authorId: 'fake author',
-      description: '',
-      questions: [
-        {
-          id: 'qid 1',
-          text: 'fake question 1',
-          type: 'follow_up',
-          goal: 'fake goal'
-        },
-        { id: 'qid 2', text: 'fake question 2', type: 'informational' }
-      ]
-    }
-  ]
+  const user = session?.user?.email
 
   return (
     <div className="flex grow">
