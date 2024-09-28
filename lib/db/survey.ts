@@ -26,6 +26,6 @@ export async function getSurveysByUser(userId: string): Promise<Survey[]> {
   return surveysByUser as Survey[]
 }
 
-export async function getSurvey(id: string) {
-  return await kv.get(id)
+export async function getSurvey(surveyId: string) {
+  return await kv.get('survey:' + surveyId)
 }
