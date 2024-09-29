@@ -54,6 +54,16 @@ export async function saveSurveyResponse(
   )
 }
 
+export async function getSurveyResponsesById(
+  surveyId: string
+): Promise<SurveyResponse[]> {
+  const surveyResponseKeys = await kv.keys('survey_response:' + surveyId + ':*')
+  const surveyResponses = await Promise.all<SurveyResponse | null>(
+    surveyResponseKeys.map(key => kv.get(key))
+  )
+  return surveyResponses as SurveyResponse[]
+}
+
 export async function getSurveyResponsesByUser(
   userId: string,
   surveyId: string
