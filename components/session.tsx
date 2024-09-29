@@ -1,25 +1,45 @@
 'use client'
 
-import { deleteSurvey } from '@/lib/db/survey'
 import { useLiveTranscription } from '@/lib/hooks/use-live-transcription'
-import { Survey } from '@/lib/types'
-import {
-  ArrowLeftIcon,
-  CopyIcon,
-  PlayIcon,
-  TrashIcon
-} from '@radix-ui/react-icons'
+import { Survey, SurveySession } from '@/lib/types'
+import { PlayIcon } from '@radix-ui/react-icons'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from './ui/button'
 import { AudioVisualizer } from '@/components/audio-visualizer'
+import { useSurveyController } from '@/lib/hooks/use-survey-controller'
+import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
 
-export default function Session({ survey }: { survey: Survey }) {
-  const [currentQuestion, setCurrentQuestion] = useState<number>(-1)
-  const [finalTranscript, setFinalTranscript] = useState<string>('')
-  const [questionToRead, setQuestionToRead] = useState<string>('')
-  const [done, setDone] = useState(false)
+export default function Session({
+  surveySession,
+  survey
+}: {
+  surveySession: SurveySession
+  survey: Survey
+}) {
+  const {
+    currentQuestion,
+    setCurrentQuestionResponse,
+    addFollowUpQuestion,
+    nextQuestion,
+    getTranscript,
+    startSurvey,
+    done
+  } = useSurveyController(survey)
+
+  const { speakText } = useTextToSpeech()
+
+  const handleSpeakEnded = (transcript: string) => {
+    setCurrentQuestionResponse(transcript)
+    const fullTranscript = getTranscript()
+    const followUpQuestion = null
+    if (followUpQuestion) {
+      addFollowUpQuestion(followUpQuestion)
+    } else {
+      nextQuestion()
+    }
+  }
+
   const {
     isRecording,
     transcript,
@@ -27,37 +47,23 @@ export default function Session({ survey }: { survey: Survey }) {
     stopRecording,
     mediaRecorder,
     error
-  } = useLiveTranscription(setFinalTranscript)
+  } = useLiveTranscription(handleSpeakEnded)
 
   const handleClick = () => {
     if (isRecording) {
       stopRecording()
     } else {
-      startRecording()
-      setFinalTranscript('')
+      startSurvey()
     }
   }
 
   useEffect(() => {
-    setQuestionToRead(survey?.questions[currentQuestion]?.text)
-  }, [currentQuestion])
-
-  const foo = (a: any) => {
-    return true
-  }
-
-  useEffect(() => {
-    if (!isRecording) {
-      if (foo(finalTranscript)) {
-        setCurrentQuestion(currentQuestion + 1)
-      } else {
-        setQuestionToRead('advice')
-      }
+    if (currentQuestion) {
+      speakText(currentQuestion).then(() => {
+        startRecording()
+      })
     }
-    if (currentQuestion == survey.questions.length - 1 && !isRecording) {
-      setDone(true)
-    }
-  }, [isRecording])
+  }, [currentQuestion, speakText, startRecording])
 
   return done ? (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
@@ -68,7 +74,7 @@ export default function Session({ survey }: { survey: Survey }) {
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
       <h1 className="text-2xl font-bold mb-8">{survey?.name}</h1>
 
-      <div className="mb-8 text-xl">{questionToRead}</div>
+      <div className="mb-8 text-xl">{currentQuestion}</div>
       <motion.div
         animate={{
           width: isRecording ? 200 : 96,
@@ -102,19 +108,9 @@ export default function Session({ survey }: { survey: Survey }) {
       </motion.div>
 
       <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-lg w-full text-slate-700">
-        <h2 className="text-lg font-semibold mb-2">
-          {isRecording ? 'Live Transcript:' : 'Final Transcript:'}
-        </h2>
-        <p>{isRecording ? transcript : finalTranscript}</p>
+        <h2 className="text-lg font-semibold mb-2">Live Transcript:</h2>
+        <p>{transcript}</p>
       </div>
-
-      {!isRecording && finalTranscript && (
-        <div className="mt-4">
-          <Button onClick={() => setFinalTranscript('')}>
-            Clear Transcript
-          </Button>
-        </div>
-      )}
     </div>
   )
 }

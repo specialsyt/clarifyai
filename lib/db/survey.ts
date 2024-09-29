@@ -1,7 +1,13 @@
 'use server'
 
 import { kv } from '@vercel/kv'
-import { Session, Survey } from '../types'
+import {
+  QuestionResponse,
+  Session,
+  Survey,
+  SurveyResponse,
+  SurveySession
+} from '../types'
 
 export async function createSurvey(
   session: Session,
@@ -34,5 +40,48 @@ export async function getSurvey(surveyId: string): Promise<Survey | null> {
 }
 
 export async function deleteSurvey(surveyId: string): Promise<void> {
-    await kv.del('survey:' + surveyId)
+  await kv.del('survey:' + surveyId)
+}
+
+export async function saveSurveyResponse(
+  surveyId: string,
+  userId: string,
+  surveyResponse: SurveyResponse
+): Promise<void> {
+  await kv.set('survey_response:' + surveyId + ':' + userId, surveyResponse)
+}
+
+export async function getSurveyResponsesByUser(
+  userId: string,
+  surveyId: string
+): Promise<SurveyResponse[]> {
+  const surveyResponseKeys = await kv.keys(
+    'survey_response:' + surveyId + ':' + userId
+  )
+  const surveyResponses = await Promise.all<SurveyResponse | null>(
+    surveyResponseKeys.map(key => kv.get(key))
+  )
+  return surveyResponses as SurveyResponse[]
+}
+
+export async function doesSurveyExist(surveyId: string) {
+  return await kv.exists('survey:' + surveyId)
+}
+
+export async function createSurveySession(
+  surveyId: string,
+  sessionId: string
+): Promise<void> {
+  const surveySession: SurveySession = {
+    surveyId: surveyId,
+    id: sessionId,
+    createdAt: new Date().toISOString()
   }
+  await kv.set('survey_session:' + sessionId, surveySession)
+}
+
+export async function getSurveySession(
+  sessionId: string
+): Promise<SurveySession | null> {
+  return await kv.get('survey_session:' + sessionId)
+}

@@ -57,7 +57,7 @@ export default function ResultView({
           <ResultByQuestion survey={survey!} responses={responses!} />
         </TabsContent>
         <TabsContent value="participant">
-          <ResultByParticipant survey={survey} responses={responses!}/>
+          <ResultByParticipant survey={survey} responses={responses!} />
         </TabsContent>
       </Tabs>
     </div>

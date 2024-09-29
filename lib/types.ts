@@ -25,6 +25,8 @@ export interface Session {
   user: {
     id: string
     email: string
+    firstName: string
+    lastName: string
   }
 }
 
@@ -38,6 +40,8 @@ export interface User extends Record<string, any> {
   email: string
   password: string
   salt: string
+  firstName: string
+  lastName: string
 }
 export type QuestionBase = {
   id: string
@@ -78,11 +82,16 @@ export type QuestionResponse = {
 export type SurveyResponse = {
   id: string
   surveyId: string
-  userId: string
   responses: QuestionResponse[]
 }
 
 export enum TranscriptRole {
   PARTICIPANT = 'participant',
   INTERVIEWER = 'interviewer'
+}
+
+export type SurveySession = {
+  id: string
+  surveyId: string
+  createdAt: string
 }

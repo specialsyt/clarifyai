@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
+import { QuestionResponse, TranscriptRole } from './types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -131,4 +132,13 @@ export function subMonths(date: Date, amount: number) {
   const newDate: Date = new Date(date)
   newDate.setMonth(newDate.getMonth() - amount)
   return newDate
+}
+
+export function makeTranscript(responses: QuestionResponse[]) {
+  let transcript = ''
+  for (const response of responses) {
+    transcript += `${TranscriptRole.INTERVIEWER}: ${response.question}\n`
+    transcript += `${TranscriptRole.PARTICIPANT}: ${response.response}\n`
+  }
+  return transcript
 }
