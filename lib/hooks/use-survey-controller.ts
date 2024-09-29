@@ -6,17 +6,17 @@ import {
   QuestionBase
 } from '../types'
 import { makeTranscript } from '../utils'
-import { saveSurveyResponse } from '../db/survey'
+import { _saveSurveyResponse, saveSurveyResponse } from '../db/survey'
 import { useAuthId } from './use-user-auth'
 
-export function useSurveyController(survey: Survey) {
+export function useSurveyController(sessionId: string, survey: Survey) {
   const [currentQuestion, setCurrentQuestion] = useState<QuestionBase | null>(
     null
   )
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(-1)
   const [responses, setResponses] = useState<QuestionResponse[]>([])
   const [done, setDone] = useState(false)
-  const { authId } = useAuthId()
+  // const { authId } = useAuthId()
   const setCurrentQuestionResponse = (response: string) => {
     if (!currentQuestion) {
       return
@@ -55,15 +55,12 @@ export function useSurveyController(survey: Survey) {
   }, [currentQuestionIndex])
 
   const saveSurvey = async () => {
-    if (authId) {
-      const surveyResponse: SurveyResponse = {
-        id: survey.id,
-        surveyId: survey.id,
-        userId: authId,
-        responses: responses
-      }
-      await saveSurveyResponse(survey.id, authId, surveyResponse)
+    const surveyResponse: SurveyResponse = {
+      id: survey.id,
+      surveyId: survey.id,
+      responses: responses
     }
+    await saveSurveyResponse(sessionId, survey.id, surveyResponse)
   }
 
   const endSurvey = () => {

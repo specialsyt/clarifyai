@@ -44,6 +44,17 @@ export async function deleteSurvey(surveyId: string): Promise<void> {
 }
 
 export async function saveSurveyResponse(
+  surveySessionId: string,
+  surveyId: string,
+  surveyResponse: SurveyResponse
+): Promise<void> {
+  await kv.set(
+    'survey_response:' + surveyId + ':' + surveySessionId,
+    surveyResponse
+  )
+}
+
+export async function _saveSurveyResponse(
   surveyId: string,
   userId: string,
   surveyResponse: SurveyResponse
