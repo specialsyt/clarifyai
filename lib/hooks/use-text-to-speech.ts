@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useGlobalAudioPlayer } from 'react-use-audio-player'
 
-export const useTextToSpeech = (model: string = 'aura-asteria-en') => {
+export const useTextToSpeech = (model: string = 'aura-luna-en') => {
   const { load } = useGlobalAudioPlayer()
 
   const speakText = useCallback(
