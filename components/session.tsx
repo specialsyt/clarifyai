@@ -10,37 +10,25 @@ import {
   TrashIcon
 } from '@radix-ui/react-icons'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from './ui/button'
 import { AudioVisualizer } from '@/components/audio-visualizer'
-import { useAuthId } from '@/lib/hooks/use-user-auth'
 import { useSurveyController } from '@/lib/hooks/use-survey-controller'
 import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
+import { evaluateUserResponse } from '@/lib/surveyAnalysis/llm'
 
 export default function Session({ survey }: { survey: Survey }) {
   const {
     currentQuestion,
+    parentQuestion,
     setCurrentQuestionResponse,
     addFollowUpQuestion,
     nextQuestion,
-    getTranscript,
     startSurvey,
     done
   } = useSurveyController(survey)
 
   const { speakText } = useTextToSpeech()
-
-  const handleSpeakEnded = (transcript: string) => {
-    setCurrentQuestionResponse(transcript)
-    const fullTranscript = getTranscript()
-    const followUpQuestion = null
-    if (followUpQuestion) {
-      addFollowUpQuestion(followUpQuestion)
-    } else {
-      nextQuestion()
-    }
-  }
 
   const {
     isRecording,
@@ -49,7 +37,7 @@ export default function Session({ survey }: { survey: Survey }) {
     stopRecording,
     mediaRecorder,
     error
-  } = useLiveTranscription(handleSpeakEnded)
+  } = useLiveTranscription()
 
   const handleClick = () => {
     if (isRecording) {
@@ -62,11 +50,42 @@ export default function Session({ survey }: { survey: Survey }) {
   useEffect(() => {
     ;(async () => {
       if (currentQuestion) {
-        await speakText(currentQuestion)
-        startRecording()
+        console.log('parentQuestion', parentQuestion)
+        await speakText(currentQuestion.text)
+        const transcript = await startRecording()
+        if (!transcript) {
+          return
+        }
+        const fullTranscript = setCurrentQuestionResponse(transcript)
+        if (!fullTranscript) {
+          return
+        }
+        if (parentQuestion?.type !== 'follow_up') {
+          nextQuestion()
+          return
+        }
+
+        const followUpQuestion = await evaluateUserResponse(
+          fullTranscript,
+          parentQuestion
+        )
+        if (followUpQuestion) {
+          console.log('followUpQuestion', followUpQuestion)
+          addFollowUpQuestion(followUpQuestion)
+          return
+        }
+        nextQuestion()
       }
     })()
   }, [currentQuestion])
+
+  useEffect(() => {
+    if (done) {
+      speakText(
+        'Thank you for completing this survey! Your results have been saved.'
+      )
+    }
+  }, [done])
 
   return done ? (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
@@ -77,7 +96,7 @@ export default function Session({ survey }: { survey: Survey }) {
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
       <h1 className="text-2xl font-bold mb-8">{survey?.name}</h1>
 
-      <div className="mb-8 text-xl">{currentQuestion}</div>
+      <div className="mb-8 text-xl">{currentQuestion?.text}</div>
       <motion.div
         animate={{
           width: isRecording ? 200 : 96,

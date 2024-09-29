@@ -13,7 +13,7 @@ type TranscriptionHookResult = {
   isRecording: boolean
   transcript: string
   error: string | null
-  startRecording: () => Promise<void>
+  startRecording: () => Promise<string | undefined>
   stopRecording: () => void
   mediaRecorder: MediaRecorder | null
 }
@@ -29,9 +29,7 @@ const DEEPGRAM_CONFIG = {
   endpointing: 1000
 }
 
-export function useLiveTranscription(
-  onSpeechEnd: (transcript: string) => void
-): TranscriptionHookResult {
+export function useLiveTranscription(): TranscriptionHookResult {
   // State
   const [isRecording, setIsRecording] = useState(false)
   const [transcript, setTranscript] = useState<string>('')
@@ -44,6 +42,7 @@ export function useLiveTranscription(
   const [error, setError] = useState<string | null>(null)
   // Refs
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const onSpeechEndResolve = useRef<((transcript: string) => void) | null>(null)
 
   // Initialize Deepgram client
   useEffect(() => {
@@ -55,10 +54,10 @@ export function useLiveTranscription(
 
   useEffect(() => {
     if (speechEnd) {
-      onSpeechEnd(transcript)
+      onSpeechEndResolve.current?.(transcript)
       setSpeechEnd(false)
     }
-  }, [speechEnd, transcript, onSpeechEnd])
+  }, [speechEnd, transcript])
 
   const setupTranscriptionSocketListeners = (
     transcriptionSocket: LiveClient
@@ -126,6 +125,9 @@ export function useLiveTranscription(
 
       mediaRecorder.start(1000)
       setIsRecording(true)
+      return await new Promise<string>(resolve => {
+        onSpeechEndResolve.current = resolve
+      })
     } catch (error) {
       setError('Error accessing microphone')
     }
