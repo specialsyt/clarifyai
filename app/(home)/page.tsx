@@ -27,19 +27,20 @@ export default function Home() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-2">Easy to Use</h3>
             <p className="text-gray-600">
-              Intuitive interface for seamless navigation.
+              Intuitive interface for seamless response collection.
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Powerful Tools</h3>
+            <h3 className="text-xl font-semibold mb-2">Flexible</h3>
             <p className="text-gray-600">
-              Advanced features to enhance your workflow.
+              Customize your interview and goals to answer your burning
+              questions.
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Secure & Reliable</h3>
+            <h3 className="text-xl font-semibold mb-2">Widely Distributable</h3>
             <p className="text-gray-600">
-              Your data is safe with our robust security measures.
+              One link to gather rich responses from thousands of participants.
             </p>
           </div>
         </section>
