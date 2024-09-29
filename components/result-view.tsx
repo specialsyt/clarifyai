@@ -84,15 +84,18 @@ export default function ResultView({
           </button>
         </div>
       </div>
-      <Tabs defaultValue="question" className="flex flex-col justify-center">
-        <TabsList>
+      <Tabs
+        defaultValue="question"
+        className="flex flex-col items-center w-full"
+      >
+        <TabsList className="mx-auto">
           <TabsTrigger value="question">Results by Question</TabsTrigger>
           <TabsTrigger value="participant">Results by Participant</TabsTrigger>
         </TabsList>
-        <TabsContent value="question">
+        <TabsContent value="question" className="w-full lg:w-1/2">
           <ResultByQuestion survey={survey!} responses={responses!} />
         </TabsContent>
-        <TabsContent value="participant">
+        <TabsContent value="participant" className="w-full lg:w-1/2">
           <ResultByParticipant survey={survey} responses={responses!} />
         </TabsContent>
       </Tabs>

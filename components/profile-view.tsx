@@ -16,8 +16,8 @@ export default function ProfileView({
   const router = useRouter()
 
   return (
-    <div className="flex grow">
-      <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950 ">
+    <div className="lg:w-1/2 mx-auto flex justify-center items-center grow">
+      <div className="grow h-full items-center rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950 ">
         <div className="text-7xl py-4">Welcome, {user.firstName}!</div>
         <hr />
         {surveys.length == 0 ? <div>No Surveys Yet</div> : <></>}
@@ -25,16 +25,15 @@ export default function ProfileView({
           {surveys.map(s => {
             return <SurveyItem key={s.id} surveyInfo={s} />
           })}
-          <div className="w-1/5 m-[20px] flex">
+          <div className="w-1/5 m-[20px] aspect-square">
             <button
               type="button"
-              className="my-4 flex grow items-center justify-center rounded-md  p-2 text-sm font-semibold text-zinc-100 bg-zinc-900 hover:bg-zinc-600"
+              className="w-full h-full flex flex-col items-center justify-center rounded-lg bg-zinc-950 hover:bg-zinc-600 shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 overflow-hidden"
               onClick={() => {
                 router.push('/new')
               }}
             >
-              <div className="text-l pr-1 semibold">Create New Survey</div>
-              <PlusIcon />
+              <PlusIcon className="w-12 h-12  text-white" />
             </button>
           </div>
         </div>
