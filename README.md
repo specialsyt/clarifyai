@@ -3,12 +3,46 @@
 Simple written surveys struggle to get participants to offer detailed answers.  
 ClarifyAI guides participants using leading questions, getting more detail and creating summaries for valuable insights.
 
+<p align="center">
+  <a href="https://www.clarifyai.com" target="_blank">
+    <img src="https://img.shields.io/badge/Visit-ClarifyAI-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Visit ClarifyAI Website" />
+  </a>
+</p>
+
 ## Built By
 
-[Shivam Singh](https://github.com/specialsyt)  
-[Max Liu](https://github.com/mliu2003)  
-[Elliot Roe](https://github.com/ElliotRoe)  
-[Tiger Peng](https://github.com/TigerPeng2)
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/specialsyt">
+        <img src="https://github.com/specialsyt.png" width="100px;" alt="Shivam Singh"/>
+        <br />
+        <sub><b>Shivam Singh</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/mliu2003">
+        <img src="https://github.com/mliu2003.png" width="100px;" alt="Max Liu"/>
+        <br />
+        <sub><b>Max Liu</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/ElliotRoe">
+        <img src="https://github.com/ElliotRoe.png" width="100px;" alt="Elliot Roe"/>
+        <br />
+        <sub><b>Elliot Roe</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/TigerPeng2">
+        <img src="https://github.com/TigerPeng2.png" width="100px;" alt="Tiger Peng"/>
+        <br />
+        <sub><b>Tiger Peng</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
 
 ## Inspiration
 
