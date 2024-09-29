@@ -2,6 +2,10 @@
 
 import { createOpenAI } from '@ai-sdk/openai'
 import { EnhancedQuestion, LLMEvaluationResponse, Question } from '../types'
+import { m } from 'framer-motion'
+
+const followup_cutoff = 4
+const goal_followup_cutoff = 2
 
 const groq = createOpenAI({
   baseURL: 'https://api.groq.com/openai/v1',
@@ -23,12 +27,17 @@ export async function evaluateUserResponse(
   const relevancy = await evaluateResponseRelevance(transcript, mainQuestion)
   console.log(relevancy)
 
-  if (analysis.indicies.length > 0 && relevancy < 80) {
+  if (
+    analysis.indicies.length > 0 &&
+    relevancy < 80 &&
+    mainQuestion.num_followups < followup_cutoff
+  ) {
     const leadingQuestion = await generateLeadingQuestion(
       transcript,
       mainQuestion,
       analysis.indicies
     )
+    mainQuestion.num_followups += 1
     return leadingQuestion
   } else {
     console.log('Move on to next question.')
@@ -163,25 +172,39 @@ export async function generateLeadingQuestion(
   The user has not met the following goal:
 
   ${mainQuestion.goals
-    .filter((goal, index) => index in goalsLeft)
+    .filter(
+      (goal, index) =>
+        index in goalsLeft &&
+        mainQuestion.metadata[index] < goal_followup_cutoff
+    )
     .map((goal, index) => `${index + 1}. ${goal}`)
     .join('\n')}
 
   The input below is the response they have originally given.
 
-  Please come up with a list of possible leading questions that would invite the interviewee to respond to the goals they have not met.
-  There should be 2-3 questions, which are open-ended and encourage more detail from the interviewee. Please also ensure that these questions are shorter than 15 words.
+  Please come up with a list of possible leading questions that would encourage the interviewee to provide more details regarding the goals that have not been met.
+  There should be 2-3 questions which are not overly detailed or wordy. Don't be too specific, but just encourage the user to keep talking about the subject. Also make sure that all of your questions are 10 or fewer words in length.
 
-  After you have brainstormed some questions, select a single question and a corresponding unmet goal.
+  After you have brainstormed some questions, select a single question and the index of a corresponding unmet goal.
   Add <goal_start> and <goal_end> tags around the selected goal.
   Add <output_start> and <output_end> tags around the selected question.
+  Also include your explanation for why you selected that question and goal, with <explanation_start> and <explanation_end> tags around your explanation.
+  When creating closing tags, please do not include forward slashes.
+
+  For example, DO NOT DO:
+  <goal_start>
+  </goal_end>
+
+  DO NOT DO:
+  <output_start>
+  </output_end>
 
   Example Output:
   Based on the conversation, the user has considered the following goals:
 
-  * Shape: mentioned that the shape is very round and that's good
-  * Looks: has not mentioned anything about the looks of the product
-  * Feel: has not mentioned anything about how the product feels or its ergonomics
+  1. Shape: mentioned that the shape is very round and that's good
+  2. Looks: has not mentioned anything about the looks of the product
+  3. Feel: has not mentioned anything about how the product feels or its ergonomics
   
   Questions:
   1. Do you have any specific thoughts on the looks of the product?
@@ -189,12 +212,16 @@ export async function generateLeadingQuestion(
   3. Is the product intuitive to use?
 
   <goal_start>
-  Looks
+  2
   <goal_end>
 
   <output_start>
   Do you have any specific thoughts on the looks of the product?
   <output_end>
+
+  <explanation_start>
+  The question "Do you have any specific thoughts on the looks of the product?" has been selected because the user has not mentioned anything about the looks of the product, and it has been linked with Goal 2, Looks, because it clearly relates to the looks of the product.
+  <explanation_end>
   `
 
   const content = transcript
@@ -203,6 +230,13 @@ export async function generateLeadingQuestion(
   const outputStart = text.indexOf('<output_start>')
   const outputEnd = text.indexOf('<output_end>')
   const output = text.slice(outputStart + 14, outputEnd)
+
+  const goalStart = text.indexOf('<goal_start>')
+  const goalEnd = text.indexOf('<goal_end>')
+  const goal = parseInt(text.slice(outputStart + 12, outputEnd))
+
+  // Add to the number of times a given goal has been referenced
+  mainQuestion.metadata[goal - 1] += 1
 
   return output
 }
