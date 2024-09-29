@@ -7,8 +7,8 @@ import {
 } from './llm'
 
 export async function TestLLMAnalysisAndGeneration() {
-  const transcript =
-    'It was a good day. I think that all the kids had fun and no one got hurt, so that is good.'
+  var transcript =
+    'It was a good day. I think that all the kids had fun. We had an incident where a kid got spit at, but besides that it was fine.'
 
   const question = {
     id: '1',
@@ -17,5 +17,14 @@ export async function TestLLMAnalysisAndGeneration() {
     goals: ['Incidents', 'safety', 'fun']
   } as EnhancedQuestion
 
-  evaulateUserResponse(transcript, question)
+  while (true) {
+    const followupQuestion = await evaulateUserResponse(transcript, question)
+    if (followupQuestion) {
+      console.log(followupQuestion)
+      var answer = 'I think that all the kids were being safe.'
+      transcript += '\n' + followupQuestion + '\n' + answer
+    } else {
+      break
+    }
+  }
 }
