@@ -1,7 +1,7 @@
 'use client'
 
 import { useLiveTranscription } from '@/lib/hooks/use-live-transcription'
-import { Survey, SurveySession } from '@/lib/types'
+import { EnhancedQuestion, Survey, SurveySession } from '@/lib/types'
 import { PlayIcon } from '@radix-ui/react-icons'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
@@ -55,6 +55,14 @@ export default function Session({
     }
   }
 
+  const updateQuestionStats = (
+    parentQuestion: EnhancedQuestion,
+    mainQuestion: EnhancedQuestion
+  ) => {
+    parentQuestion.num_followups = mainQuestion.num_followups
+    parentQuestion.timesFollowedUp = mainQuestion.timesFollowedUp
+  }
+
   useEffect(() => {
     ;(async () => {
       if (currentQuestion) {
@@ -75,13 +83,13 @@ export default function Session({
           return
         }
 
-        const followUpQuestion = await evaluateUserResponse(
+        const { leadingQuestion, mainQuestion } = await evaluateUserResponse(
           fullTranscript,
           parentQuestion
         )
-        if (followUpQuestion) {
-          console.log('followUpQuestion', followUpQuestion)
-          addFollowUpQuestion(followUpQuestion)
+        updateQuestionStats(parentQuestion, mainQuestion)
+        if (leadingQuestion) {
+          addFollowUpQuestion(leadingQuestion)
           return
         }
         nextQuestion()

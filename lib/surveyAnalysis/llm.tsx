@@ -15,7 +15,7 @@ const groq = createOpenAI({
 export async function evaluateUserResponse(
   transcript: string,
   mainQuestion: EnhancedQuestion
-): Promise<string | null> {
+): Promise<{ leadingQuestion: string | null; mainQuestion: EnhancedQuestion }> {
   'use server'
 
   const analysis = await analyzeTranscript(
@@ -38,10 +38,10 @@ export async function evaluateUserResponse(
       analysis.indicies
     )
     mainQuestion.num_followups += 1
-    return leadingQuestion
+    return { leadingQuestion, mainQuestion }
   } else {
     console.log('Move on to next question.')
-    return null
+    return { leadingQuestion: null, mainQuestion }
   }
 }
 
@@ -189,7 +189,7 @@ export async function generateLeadingQuestion(
 
   Please come up with a list of possible leading questions that would encourage the interviewee to provide more details regarding the goals that have not been met.
   There should be 2-3 questions which are not overly detailed or wordy. Encourage the user to provide more information regarding the goals and about what they have already mentioned.
-  Make sure that all of your questions are 10 or fewer words in length.
+  Make sure that all of your questions are 5 or fewer words in length.
 
   After you have brainstormed some questions, select a single question and the number of a corresponding unmet goal. Please only include the number of the goal, not the body.
   Add <goal_start> and <goal_end> tags around the selected goal number.
