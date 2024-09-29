@@ -1,4 +1,4 @@
-import 'server-only'
+'use server'
 
 import { createOpenAI } from '@ai-sdk/openai'
 import { EnhancedQuestion, LLMEvaluationResponse, Question } from '../types'
@@ -8,7 +8,7 @@ const groq = createOpenAI({
   apiKey: process.env.GROQ_API_KEY
 })
 
-export async function evaulateUserResponse(
+export async function evaluateUserResponse(
   transcript: string,
   mainQuestion: EnhancedQuestion
 ): Promise<string | null> {
