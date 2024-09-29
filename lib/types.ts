@@ -57,7 +57,12 @@ export type EnhancedQuestion = QuestionBase & {
   goals: string[]
 }
 
-export type Question = InformationalQuestion | EnhancedQuestion
+export type ChildQuestion = QuestionBase & {
+  type: 'child'
+  parentId: string
+}
+
+export type Question = InformationalQuestion | EnhancedQuestion | ChildQuestion
 
 export type Survey = {
   id: string

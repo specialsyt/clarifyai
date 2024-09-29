@@ -7,6 +7,7 @@ import {
   analyzeTranscript,
   generateLeadingQuestion
 } from '@/lib/surveyAnalysis/llm'
+import { TestLLMAnalysisAndGeneration } from '@/lib/surveyAnalysis/llm-test'
 import { EnhancedQuestion, Session, Survey } from '@/lib/types'
 import { getUser } from '../login/actions'
 
@@ -18,6 +19,8 @@ export default async function ProfilePage() {
   if (!user) throw new Error('User is null')
 
   const surveys = await getSurveysByUser(session.user?.id ?? '')
+
+  await TestLLMAnalysisAndGeneration()
 
   return (
     <main className="flex flex-col p-4">
