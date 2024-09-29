@@ -1,10 +1,7 @@
 'use client'
 
-import { deleteSurvey } from '@/lib/db/survey'
-import { Session, Survey, SurveyResponse } from '@/lib/types'
-import { ArrowLeftIcon, CopyIcon, TrashIcon } from '@radix-ui/react-icons'
-import { useRouter } from 'next/navigation'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Survey, SurveyResponse } from '@/lib/types'
+import { CopyIcon } from '@radix-ui/react-icons'
 
 export default function ResultByParticipant({
   survey,
@@ -13,17 +10,18 @@ export default function ResultByParticipant({
   survey: Survey
   responses: SurveyResponse[]
 }) {
+  const url = window.location.origin + '/survey/' + survey.id
   return (
     <div className="flex-col grow">
       <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
         <div className="flex">
           <button
             onClick={() => {
-              navigator.clipboard.writeText(window.location.href)
+              navigator.clipboard.writeText(url)
             }}
           >
             <div className="flex">
-              <div className="pr-2">Link: {window.location.href}</div>
+              <div className="pr-2">Link: {url}</div>
               <CopyIcon />
             </div>
           </button>
@@ -33,7 +31,6 @@ export default function ResultByParticipant({
         <div className="text-xl py-4">{survey.description}</div>
       </div>
       {responses.map(r => {
-        console.log(responses)
         return (
           <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
             {r.responses.map(q => {
