@@ -4,7 +4,7 @@ Simple written surveys struggle to get participants to offer detailed answers.
 ClarifyAI guides participants using leading questions, getting more detail and creating summaries for valuable insights.
 
 <p align="center">
-  <a href="https://www.clarifyai.com" target="_blank">
+  <a href="https://www.clarifyai.us" target="_blank">
     <img src="https://img.shields.io/badge/Visit-ClarifyAI-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Visit ClarifyAI Website" />
   </a>
 </p>
