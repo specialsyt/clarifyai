@@ -10,6 +10,12 @@ import { AudioVisualizer } from '@/components/audio-visualizer'
 import { useSurveyController } from '@/lib/hooks/use-survey-controller'
 import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
 import { evaluateUserResponse } from '@/lib/surveyAnalysis/llm'
+import clarifytalk from '@/public/assets/clarifytalk.gif'
+import clarifystand from '@/public/assets/clarifystand.png'
+import clarifythink from '@/public/assets/clarifythink.png'
+import clarifythumbsup from '@/public/assets/clarifythumbsup.png'
+import Image from 'next/image'
+import { useState } from 'react'
 
 export default function Session({
   surveySession,
@@ -30,6 +36,8 @@ export default function Session({
 
   const { speakText } = useTextToSpeech()
 
+  const [isResponding, setIsResponding] = useState(false)
+
   const {
     isRecording,
     transcript,
@@ -47,10 +55,13 @@ export default function Session({
     }
   }
 
-  useEffect(() => {(async () => {
+  useEffect(() => {
+    ;(async () => {
       if (currentQuestion) {
         console.log('parentQuestion', parentQuestion)
+        setIsResponding(true)
         await speakText(currentQuestion.text)
+        setIsResponding(false)
         const transcript = await startRecording()
         if (!transcript) {
           return
@@ -90,12 +101,20 @@ export default function Session({
     <div className="flex flex-col items-center justify-center ">
       <h1 className="text-2xl font-bold mb-8">{survey?.name}</h1>
       Thanks for completing this survey! Your results have been saved.
+      <Image src={clarifythumbsup} alt="thumbs up" className="w-48 h-auto" />
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center ">
       <h1 className="text-2xl font-bold mb-8">{survey?.name}</h1>
 
       <div className="mb-8 text-xl">{currentQuestion?.text}</div>
+      {isResponding ? (
+        <Image src={clarifytalk} alt="talking..." className="w-48 h-auto" />
+      ) : isRecording ? (
+        <Image src={clarifythink} alt="listening..." className="w-48 h-auto" />
+      ) : (
+        <Image src={clarifystand} alt="waiting..." className="w-48 h-auto" />
+      )}
       <motion.div
         animate={{
           width: isRecording ? 200 : 96,
