@@ -112,7 +112,7 @@ export async function evaluateResponseRelevance(
   ${mainQuestion.goals.map((goal, index) => `${index + 1}. ${goal}`).join('\n')}
 
   As an output, you should output a relevancy score between 0 and 100 which represents how completely the goals have been addressed by the user's responses.
-  For example, if half of the goals have been addressed, a score of 50 would be appropriate.
+  For example, if half of the goals have been addressed, a score of 50 would be appropriate. Please do not be overly generous or harsh with your scoring.
 
   Add <output_start> and <output_end> tags around your indicies response.
 
@@ -170,7 +170,7 @@ export async function generateLeadingQuestion(
   The input below is the response they have originally given.
 
   Please come up with a list of possible leading questions that would invite the interviewee to respond to the goals they have not met.
-  There should be 2-3 questions, which are not overly detailed or wordy, only as long as they need to be to get a specific response.
+  There should be 2-3 questions, which are open-ended and encourage more detail from the interviewee. Please also ensure that these questions are shorter than 15 words.
 
   After you have brainstormed some questions, select a single question and a corresponding unmet goal.
   Add <goal_start> and <goal_end> tags around the selected goal.
