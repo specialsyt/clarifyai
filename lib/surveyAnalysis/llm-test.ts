@@ -1,3 +1,4 @@
+import assert from 'assert'
 import { EnhancedQuestion } from '../types'
 import {
   analyzeTranscript,
@@ -7,6 +8,7 @@ import {
 } from './llm'
 
 export async function TestLLMAnalysisAndGeneration() {
+  assert(process.env.NODE_ENV != 'production')
   var transcript =
     'It was a good day. I think that all the kids had fun. We had an incident where a kid got spit at, but besides that it was fine.'
 
