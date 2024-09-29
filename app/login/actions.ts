@@ -8,6 +8,8 @@ import { kv } from '@vercel/kv'
 import { ResultCode } from '@/lib/utils'
 
 export async function getUser(email: string) {
+  'use server'
+
   const user = await kv.hgetall<User>(`user:${email}`)
   return user
 }

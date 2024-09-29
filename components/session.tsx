@@ -1,14 +1,8 @@
 'use client'
 
-import { saveSurveyResponse, deleteSurvey } from '@/lib/db/survey'
 import { useLiveTranscription } from '@/lib/hooks/use-live-transcription'
-import { QuestionResponse, Survey } from '@/lib/types'
-import {
-  ArrowLeftIcon,
-  CopyIcon,
-  PlayIcon,
-  TrashIcon
-} from '@radix-ui/react-icons'
+import { Survey, SurveySession } from '@/lib/types'
+import { PlayIcon } from '@radix-ui/react-icons'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
 import { Button } from './ui/button'
@@ -17,7 +11,13 @@ import { useSurveyController } from '@/lib/hooks/use-survey-controller'
 import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
 import { evaluateUserResponse } from '@/lib/surveyAnalysis/llm'
 
-export default function Session({ survey }: { survey: Survey }) {
+export default function Session({
+  surveySession,
+  survey
+}: {
+  surveySession: SurveySession
+  survey: Survey
+}) {
   const {
     currentQuestion,
     parentQuestion,

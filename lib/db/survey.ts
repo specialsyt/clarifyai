@@ -1,7 +1,13 @@
 'use server'
 
 import { kv } from '@vercel/kv'
-import { QuestionResponse, Session, Survey, SurveyResponse } from '../types'
+import {
+  QuestionResponse,
+  Session,
+  Survey,
+  SurveyResponse,
+  SurveySession
+} from '../types'
 
 export async function createSurvey(
   session: Session,
@@ -56,4 +62,26 @@ export async function getSurveyResponsesByUser(
     surveyResponseKeys.map(key => kv.get(key))
   )
   return surveyResponses as SurveyResponse[]
+}
+
+export async function doesSurveyExist(surveyId: string) {
+  return await kv.exists('survey:' + surveyId)
+}
+
+export async function createSurveySession(
+  surveyId: string,
+  sessionId: string
+): Promise<void> {
+  const surveySession: SurveySession = {
+    surveyId: surveyId,
+    id: sessionId,
+    createdAt: new Date().toISOString()
+  }
+  await kv.set('survey_session:' + sessionId, surveySession)
+}
+
+export async function getSurveySession(
+  sessionId: string
+): Promise<SurveySession | null> {
+  return await kv.get('survey_session:' + sessionId)
 }
