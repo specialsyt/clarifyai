@@ -25,6 +25,18 @@ export default async function ResultPage({
           id: 'b6d678b6-3e39-47e1-82ff-3c8414cc7589',
           question: 'question text!',
           response: 'response'
+        },
+        {
+          parentId: 'b6d678b6-3e39-47e1-82ff-3c8414cc7589',
+          id: 'b6d678b6-3e39-47e1-82ff-3c841asdsadasd4cc7589',
+          question: 'question followup',
+          response: 'response followup'
+        },
+        {
+          parentId: 'b6d678b6-3e39-47e1-82ff-3c841asdsadasd4cc7589',
+          id: 'b6d678b6-3e39-47e1-82ff-3c841asdsadasd4cc7589',
+          question: 'new question',
+          response: 'new response '
         }
       ]
     },
@@ -73,7 +85,7 @@ export default async function ResultPage({
 
   return (
     <main className="flex flex-col p-4">
-      <ResultView session={session} survey={survey!} responses={responses!}/>
+      <ResultView session={session} survey={survey!} responses={responses!} />
     </main>
   )
 }

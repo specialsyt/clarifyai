@@ -52,8 +52,9 @@ export default function ResultByQuestion({
                 return (
                   <div className="">
                     {a.id == a.parentId ? (
-                      <div className="pt-8">
-                        {a.response}
+                      <div>
+                        <hr />
+                        <div className="pt-4">{a.response}</div>
                       </div>
                     ) : (
                       <div>

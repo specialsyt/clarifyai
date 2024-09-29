@@ -1,15 +1,17 @@
 'use client'
 
 import { deleteSurvey } from '@/lib/db/survey'
-import { Session, Survey } from '@/lib/types'
+import { Session, Survey, SurveyResponse } from '@/lib/types'
 import { ArrowLeftIcon, CopyIcon, TrashIcon } from '@radix-ui/react-icons'
 import { useRouter } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function ResultByParticipant({
-  survey
+  survey,
+  responses
 }: {
   survey: Survey
+  responses: SurveyResponse[]
 }) {
   return (
     <div className="flex-col grow">
@@ -30,19 +32,24 @@ export default function ResultByParticipant({
         <hr />
         <div className="text-xl py-4">{survey.description}</div>
       </div>
-      {survey.questions.map(q => {
+      {responses.map(r => {
+        console.log(responses)
         return (
           <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
-            <div className="text-2xl pb-4">
-              {q.text} ({q.type})
-            </div>
-            {q.type == 'follow_up' ? (
-              <div className="text-l pb-4">{q.goals}</div>
-            ) : (
-              <></>
-            )}
-            <hr />
-            {/* TODO Results here */}
+            {r.responses.map(q => {
+              return q.id == q.parentId ? (
+                <div>
+                  <hr />
+                  <div className="text-xl py-4 font-bold">{q.question}</div>
+                  <div className="">{q.response}</div>
+                </div>
+              ) : (
+                <div>
+                  <div className="text-l pb-4 font-bold">{q.question}</div>
+                  <div className="">{q.response}</div>
+                </div>
+              )
+            })}
           </div>
         )
       })}
