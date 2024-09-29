@@ -22,10 +22,14 @@ export default function ResultByQuestion({
         return (
           <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
             <div className="text-2xl pb-4">
-              {q.text} ({q.type})
+              {q.text} ({q.type == 'follow_up' ? 'Long' : 'Short'})
             </div>
             {q.type == 'follow_up' ? (
-              <div className="text-l pb-4">{q.goals}</div>
+              <div className="text-l pb-4">
+                {q.goals.map(g => {
+                  return <div>{g}</div>
+                })}
+              </div>
             ) : (
               <></>
             )}
