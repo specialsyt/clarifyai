@@ -12,44 +12,38 @@ export default function ResultByParticipant({
 }) {
   const url = window.location.origin + '/survey/' + survey.id
   return (
-    <div className="flex-col grow">
-      <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
-        <div className="flex">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(url)
-            }}
-          >
-            <div className="flex">
-              <div className="pr-2">Link: {url}</div>
-              <CopyIcon />
-            </div>
-          </button>
-        </div>
-        <div className="text-5xl py-4">{survey.name}</div>
-        <hr />
-        <div className="text-xl py-4">{survey.description}</div>
+    <div className="flex flex-col space-y-6">
+      <div className="rounded-lg border bg-white px-8 py-6 shadow-md dark:bg-zinc-900">
+        <h1 className="text-4xl font-bold mb-4">{survey.name}</h1>
+        <hr className="border-gray-200 dark:border-gray-700 mb-4" />
+        <p className="text-xl text-gray-600 dark:text-gray-300">
+          {survey.description}
+        </p>
       </div>
-      {responses.map(r => {
-        return (
-          <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
-            {r.responses.map(q => {
-              return q.id == q.parentId ? (
-                <div>
-                  <hr />
-                  <div className="text-xl py-4 font-bold">{q.question}</div>
-                  <div className="">{q.response}</div>
-                </div>
+
+      {responses.map((r, index) => (
+        <div
+          key={index}
+          className="rounded-lg border bg-white px-8 py-6 shadow-md dark:bg-zinc-900"
+        >
+          <h2 className="text-2xl font-semibold mb-4">
+            Participant {index + 1}
+          </h2>
+          {r.responses.map((q, qIndex) => (
+            <div key={qIndex} className="mb-6 last:mb-0">
+              {q.id === q.parentId ? (
+                <>
+                  <hr className="border-gray-200 dark:border-gray-700 mb-4" />
+                  <h3 className="text-xl font-bold mb-2">{q.question}</h3>
+                </>
               ) : (
-                <div>
-                  <div className="text-l pb-4 font-bold">{q.question}</div>
-                  <div className="">{q.response}</div>
-                </div>
-              )
-            })}
-          </div>
-        )
-      })}
+                <h4 className="text-lg font-semibold mb-2">{q.question}</h4>
+              )}
+              <p className="text-gray-700 dark:text-gray-300">{q.response}</p>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   )
 }

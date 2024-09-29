@@ -17,6 +17,9 @@ export default async function ResultPage({
 
   if (!survey) redirect('/')
 
+  const validUser = session?.user?.id == survey.authorId
+  if (!validUser) redirect('/')
+
   return (
     <main className="flex flex-col p-4">
       <ResultView session={session} survey={survey!} responses={responses!} />

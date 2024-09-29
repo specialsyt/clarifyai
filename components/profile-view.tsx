@@ -18,7 +18,7 @@ export default function ProfileView({
 
   return (
     <div className="lg:w-1/2 mx-auto flex justify-center items-center grow">
-      <div className="grow h-full items-center rounded-lg border bg-white px-8 py-8 my-4 shadow-md">
+      <div className="grow h-full items-center rounded-lg border bg-white px-8 py-8 shadow-md">
         <div className="text-7xl py-4">Welcome, {user.firstName}!</div>
         <hr />
         {surveys.length === 0 ? (
@@ -31,7 +31,7 @@ export default function ProfileView({
             </p>
           </div>
         ) : null}
-        <div className="flex items-center flex-wrap pt-20">
+        <div className="flex items-center flex-wrap ">
           {surveys.map(s => {
             return <SurveyItem key={s.id} surveyInfo={s} />
           })}

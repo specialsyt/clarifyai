@@ -14,18 +14,6 @@ export default function ResultByQuestion({
   return (
     <div className="flex-col grow">
       <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
-        <div className="flex">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(url)
-            }}
-          >
-            <div className="flex">
-              <div className="pr-2">Link: {url}</div>
-              <CopyIcon />
-            </div>
-          </button>
-        </div>
         <div className="text-5xl py-4">{survey.name}</div>
         <hr />
         <div className="text-xl py-4">{survey.description}</div>
