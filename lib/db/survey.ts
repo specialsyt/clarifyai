@@ -52,6 +52,11 @@ export async function saveSurveyResponse(
     'survey_response:' + surveyId + ':' + surveySessionId,
     surveyResponse
   )
+  const surveySession = await getSurveySession(surveySessionId)
+  if (surveySession) {
+    surveySession.completed = true
+    await kv.set('survey_session:' + surveySessionId, surveySession)
+  }
 }
 
 export async function getSurveyResponsesById(
@@ -88,6 +93,7 @@ export async function createSurveySession(
   const surveySession: SurveySession = {
     surveyId: surveyId,
     id: sessionId,
+    completed: false,
     createdAt: new Date().toISOString()
   }
   await kv.set('survey_session:' + sessionId, surveySession)
