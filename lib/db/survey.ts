@@ -57,3 +57,9 @@ export async function getSurveyResponsesByUser(
   )
   return surveyResponses as SurveyResponse[]
 }
+
+export async function getSurveyBySessionId(
+  sessionId: string
+): Promise<Survey | null> {
+  return await kv.get('survey:' + sessionId)
+}

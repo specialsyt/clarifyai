@@ -2,23 +2,23 @@
 
 import { PlusIcon } from '@radix-ui/react-icons'
 import SurveyItem from './survey-item'
-import { Session, Survey } from '@/lib/types'
+import { Session, Survey, User } from '@/lib/types'
 import { useRouter } from 'next/navigation'
+import { getUser } from '@/app/login/actions'
 
 export default function ProfileView({
-  session,
+  user,
   surveys
 }: {
-  session: Session | null
+  user: User
   surveys: Survey[]
 }) {
   const router = useRouter()
-  const user = session?.user?.email
 
   return (
     <div className="flex grow">
       <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
-        <div className="text-7xl py-4">Welcome, {user}!</div>
+        <div className="text-7xl py-4">Welcome, {user.firstName}!</div>
         <hr />
         {surveys.length == 0 ? <div>No Surveys Yet</div> : <></>}
         <div className="flex items-center flex-wrap pt-20">

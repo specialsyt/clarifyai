@@ -44,7 +44,10 @@ export default function ResultView({
       <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
         <div className="flex">
           <div className="pr-2">
-            Link: {window.location.href}/{survey.id}
+            Link:{' '}
+            {window.location.href.includes(survey.id)
+              ? window.location.href
+              : `${window.location.href}/${survey.id}`}
           </div>
           <button
             onClick={() => {

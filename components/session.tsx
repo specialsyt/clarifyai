@@ -18,7 +18,13 @@ import { useAuthId } from '@/lib/hooks/use-user-auth'
 import { useSurveyController } from '@/lib/hooks/use-survey-controller'
 import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
 
-export default function Session({ survey }: { survey: Survey }) {
+export default function Session({
+  sessionId,
+  survey
+}: {
+  sessionId: string
+  survey: Survey
+}) {
   const {
     currentQuestion,
     setCurrentQuestionResponse,

@@ -8,11 +8,12 @@ export default async function SessionPage({
 }: {
   params: { id: string }
 }) {
+  const sessionId = params.id
   const survey = await getSurvey(params.id)
 
   return (
     <main className="flex flex-col p-4">
-      <Session survey={survey!} />
+      <Session sessionId={sessionId} survey={survey!} />
     </main>
   )
 }
