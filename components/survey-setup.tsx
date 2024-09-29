@@ -48,7 +48,13 @@ export default function SurveySetup({ session }: { session: Session }) {
             type: 'follow_up',
             goals: (formData.get('question answers ' + q.id) as string).split(
               ','
+            ),
+            timesFollowedUp: (
+              formData.get('question answers ' + q.id) as string
             )
+              .split(',')
+              .map(_ => 0),
+            num_followups: 0
           })
         } else {
           questionsArr.push({
