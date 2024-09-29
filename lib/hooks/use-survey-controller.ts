@@ -17,14 +17,6 @@ export function useSurveyController(sessionId: string, survey: Survey) {
   const [responses, setResponses] = useState<QuestionResponse[]>([])
   const [done, setDone] = useState(false)
 
-  useEffect(() => {
-    console.log('responses', responses)
-  }, [responses])
-
-  useEffect(() => {
-    console.log('currentQuestion', currentQuestion)
-  }, [currentQuestion])
-
   const setCurrentQuestionResponse = (response: string) => {
     if (!currentQuestion) {
       return
@@ -67,7 +59,6 @@ export function useSurveyController(sessionId: string, survey: Survey) {
     setCurrentQuestion(survey.questions[currentQuestionIndex])
     setParentQuestion(survey.questions[currentQuestionIndex])
   }, [currentQuestionIndex])
-
 
   useEffect(() => {
     if (responses && done) {

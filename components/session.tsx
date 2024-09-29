@@ -66,7 +66,6 @@ export default function Session({
   useEffect(() => {
     ;(async () => {
       if (currentQuestion) {
-        console.log('parentQuestion', parentQuestion)
         setIsResponding(true)
         await speakText(currentQuestion.text)
         setIsResponding(false)

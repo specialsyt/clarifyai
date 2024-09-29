@@ -63,8 +63,6 @@ export function useLiveTranscription(): TranscriptionHookResult {
     transcriptionSocket: LiveClient
   ) => {
     transcriptionSocket.on(LiveTranscriptionEvents.Open, () => {
-      console.log('client: connected to websocket')
-
       transcriptionSocket.on(
         LiveTranscriptionEvents.Transcript,
         handleTranscript
@@ -93,11 +91,8 @@ export function useLiveTranscription(): TranscriptionHookResult {
   const handleError = (e: Error) => {
     setError('Error in WebSocket connection')
   }
-  const handleMetadata = (metadata: any) =>
-    console.log('Metadata received:', metadata)
-  const handleClose = () => {
-    console.log('WebSocket connection closed')
-  }
+  const handleMetadata = (metadata: any) => {}
+  const handleClose = () => {}
   const handleUtteranceEnd = () => {
     stopRecording()
   }
