@@ -17,6 +17,10 @@ import {
 } from '@/components/ui/select'
 import { Question, Session, Survey } from '@/lib/types'
 import { createSurvey } from '@/lib/db/survey'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 interface Result {
   type: string
@@ -91,140 +95,129 @@ export default function SurveySetup({ session }: { session: Session }) {
   }, [result, router, questions])
 
   return (
-    <div className="flex">
-      <form action={dispatch} className="flex flex-col w-full items-center">
-        <div className="flex w-full">
-          <div className="w-full pt-[5px] pr-6">
-            <div className="grow w-full rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
-              <input
-                className="peer block w-2/5 rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] text-xl outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
+    <div className="container lg:w-1/2  px-4 py-8">
+      <form action={dispatch} className="space-y-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Create a New Survey</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Input
                 id="surveyName"
-                type="surveyName"
                 name="surveyName"
-                placeholder="Create a New Survey"
+                placeholder="Survey Name"
                 required
               />
-              <input
-                className="peer block w-full rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] mt-6 text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
+              <Textarea
                 id="description"
-                type="description"
                 name="description"
                 placeholder="Survey Description"
+                rows={3}
               />
             </div>
-            {questions.map(q => {
-              let curr = q.id
-              return (
-                <div
-                  key={curr}
-                  className="grow w-full rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950"
+          </CardContent>
+        </Card>
+
+        {questions.map((q, index) => (
+          <Card key={q.id}>
+            <CardContent className="pt-6">
+              <div className="flex justify-between items-center mb-4">
+                <Input
+                  className="w-2/3"
+                  id={`question ${q.id}`}
+                  name={`question name ${q.id}`}
+                  placeholder="Question Name"
+                  required
+                />
+                <Select
+                  defaultValue="informational"
+                  name={`question type ${q.id}`}
+                  onValueChange={val => {
+                    const arr = questions.map((q, index) => {
+                      if (q.id === q.id) {
+                        return val === 'follow_up'
+                          ? ({
+                              type: 'follow_up',
+                              goal: 'goal',
+                              id: q.id,
+                              text: q.text,
+                              goals: []
+                            } as Question)
+                          : ({
+                              type: 'informational',
+                              id: q.id,
+                              text: q.text
+                            } as Question)
+                      } else {
+                        return q
+                      }
+                    })
+                    setQuestions(arr)
+                  }}
                 >
-                  <div className="w-full flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const arr = questions.filter(q => {
-                          return q.id != curr
-                        })
-                        setQuestions(arr)
-                      }}
-                    >
-                      <Cross1Icon />
-                    </button>
-                  </div>
-                  <div className="flex">
-                    <input
-                      className="peer block w-2/5 rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] text-l outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                      id={'question ' + curr}
-                      type="question"
-                      name={'question name ' + curr}
-                      placeholder="Question Name"
-                      required
+                  <SelectTrigger className="w-[200px] peer border-b-2 bg-zinc-50 py-[9px] dark:border-zinc-800 dark:bg-zinc-950">
+                    <SelectValue
+                      className="text-l outline-none placeholder:text-zinc-500"
+                      placeholder="Select Question Type"
                     />
-                    <div className="py-[9px] px-[9px]">
-                      <Select
-                        defaultValue="short"
-                        name={'question type ' + curr}
-                        required
-                        onValueChange={val => {
-                          const arr = questions.map(q => {
-                            if (q.id == curr) {
-                              return val == 'follow_up'
-                                ? ({
-                                    type: 'follow_up',
-                                    goal: 'goal',
-                                    id: q.id,
-                                    text: q.text,
-                                    goals: []
-                                  } as Question)
-                                : ({
-                                    type: 'informational',
-                                    id: q.id,
-                                    text: q.text
-                                  } as Question)
-                            } else {
-                              return q
-                            }
-                          })
-                          setQuestions(arr)
-                        }}
-                      >
-                        <SelectTrigger className="w-[200px] peer border-b-2 bg-zinc-50 py-[9px] dark:border-zinc-800 dark:bg-zinc-950">
-                          <SelectValue
-                            className="text-l outline-none placeholder:text-zinc-500"
-                            placeholder="Select Question Type"
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="informational">Short</SelectItem>
-                            <SelectItem value="follow_up">Long</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  {q.type == 'follow_up' ? (
-                    <div>
-                      <input
-                        className="peer block w-full rounded-md border-b-2 bg-zinc-50 px-2 py-[9px] mt-6 text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                        id={'question answers ' + curr}
-                        type="description"
-                        name={'question answers ' + curr}
-                        placeholder="Comma Delimited Goals"
-                        required
-                      />
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              )
-            })}
-            <div className="flex justify-center">
-              <button
-                type="button"
-                className="my-4 flex h-10 w-10 flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-                onClick={() => {
-                  setQuestions(questions => [
-                    ...questions,
-                    {
-                      type: 'informational',
-                      id: crypto.randomUUID(),
-                      text: 'text'
-                    } as Question
-                  ])
-                }}
-              >
-                <PlusIcon />
-              </button>
-            </div>
-          </div>
-          <div className="sticky top-[100px] w-1/2 h-fit rounded-lg border bg-white px-6 py-8 my-4 shadow-md dark:bg-zinc-950">
-            <div className="py-30">
-              <CompleteButton />
-            </div>
-          </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="informational">Short</SelectItem>
+                      <SelectItem value="follow_up">Long</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    const arr = questions.filter(questions => {
+                      return questions.id !== q.id
+                    })
+                    setQuestions(arr)
+                  }}
+                >
+                  <Cross1Icon className="h-4 w-4" />
+                </Button>
+              </div>
+              {q.type == 'follow_up' ? (
+                <Input
+                  id={'question answers ' + q.id}
+                  type="description"
+                  name={'question answers ' + q.id}
+                  placeholder="Comma Delimited Goals"
+                  required
+                />
+              ) : (
+                <></>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+
+        <div className="flex justify-center">
+          <Button
+            type="button"
+            onClick={() => {
+              setQuestions(questions => [
+                ...questions,
+                {
+                  type: 'informational',
+                  id: crypto.randomUUID(),
+                  text: 'text'
+                } as Question
+              ])
+            }}
+          >
+            <PlusIcon className="mr-2 h-4 w-4" /> Add Question
+          </Button>
+        </div>
+
+        <div className="sticky top-[100px] flex justify-center">
+          <CompleteButton />
         </div>
       </form>
     </div>
@@ -235,12 +228,9 @@ function CompleteButton() {
   const { pending } = useFormStatus()
 
   return (
-    <button
-      type="submit"
-      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-      aria-disabled={pending}
-    >
-      {pending ? <IconSpinner /> : 'Complete'}
-    </button>
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? <IconSpinner className="mr-2 h-4 w-4" /> : null}
+      {pending ? 'Creating...' : 'Complete'}
+    </Button>
   )
 }
