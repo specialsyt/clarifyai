@@ -55,7 +55,7 @@ export type InformationalQuestion = QuestionBase & {
 export type EnhancedQuestion = QuestionBase & {
   type: 'follow_up'
   goals: string[]
-  metadata: number[]
+  timesFollowedUp: number[]
   num_followups: number
 }
 

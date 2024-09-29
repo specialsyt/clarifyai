@@ -91,13 +91,21 @@ export async function analyzeTranscript(
   const outputStart = text.indexOf('<output_start>')
   const outputEnd = text.indexOf('<output_end>')
   const output = text.slice(outputStart + 14, outputEnd)
-  const indicies = JSON.parse(output) as number[]
+  var indicies = JSON.parse(output) as number[]
 
   indicies.forEach((_, index, array) => {
     array[index] -= 1
   })
 
-  console.log(indicies)
+  console.log(`before filtering: ${indicies}`)
+  console.log(`mainQuestion.timesFollowedUp: ${mainQuestion}`)
+  console.log(`mainQuestion.timesFollowedUp: ${mainQuestion.timesFollowedUp}`)
+
+  indicies = indicies.filter(
+    (_, index) => mainQuestion.timesFollowedUp[index] < goal_followup_cutoff
+  )
+
+  console.log(`after filtering: ${indicies}`)
 
   return {
     text,
@@ -165,17 +173,14 @@ export async function generateLeadingQuestion(
   You need to analyze the transcript and provide a summary of the conversation.
   The user is meant to answer the following main question: ${mainQuestion.text}
 
-  In answering the main question, the user is meant to consider the following goals.
-
-  ${mainQuestion.goals.map((goal, index) => `${index + 1}. ${goal}`).join('\n')}
-
-  The user has not met the following goal:
+  In answering the main question, the user is meant to consider a set of goals.
+  The user has not met the following goals:
 
   ${mainQuestion.goals
     .filter(
       (goal, index) =>
         index in goalsLeft &&
-        mainQuestion.metadata[index] < goal_followup_cutoff
+        mainQuestion.timesFollowedUp[index] < goal_followup_cutoff
     )
     .map((goal, index) => `${index + 1}. ${goal}`)
     .join('\n')}
@@ -183,10 +188,11 @@ export async function generateLeadingQuestion(
   The input below is the response they have originally given.
 
   Please come up with a list of possible leading questions that would encourage the interviewee to provide more details regarding the goals that have not been met.
-  There should be 2-3 questions which are not overly detailed or wordy. Don't be too specific, but just encourage the user to keep talking about the subject. Also make sure that all of your questions are 10 or fewer words in length.
+  There should be 2-3 questions which are not overly detailed or wordy. Encourage the user to provide more information regarding the goals and about what they have already mentioned.
+  Make sure that all of your questions are 10 or fewer words in length.
 
-  After you have brainstormed some questions, select a single question and the index of a corresponding unmet goal.
-  Add <goal_start> and <goal_end> tags around the selected goal.
+  After you have brainstormed some questions, select a single question and the number of a corresponding unmet goal. Please only include the number of the goal, not the body.
+  Add <goal_start> and <goal_end> tags around the selected goal number.
   Add <output_start> and <output_end> tags around the selected question.
   Also include your explanation for why you selected that question and goal, with <explanation_start> and <explanation_end> tags around your explanation.
   When creating closing tags, please do not include forward slashes.
@@ -207,9 +213,9 @@ export async function generateLeadingQuestion(
   3. Feel: has not mentioned anything about how the product feels or its ergonomics
   
   Questions:
-  1. Do you have any specific thoughts on the looks of the product?
-  2. How does the product feel to use?
-  3. Is the product intuitive to use?
+  - Do you have any specific thoughts on the looks of the product?
+  - How does the product feel to use?
+  - Is the product intuitive to use?
 
   <goal_start>
   2
@@ -223,6 +229,16 @@ export async function generateLeadingQuestion(
   The question "Do you have any specific thoughts on the looks of the product?" has been selected because the user has not mentioned anything about the looks of the product, and it has been linked with Goal 2, Looks, because it clearly relates to the looks of the product.
   <explanation_end>
   `
+  console.log(
+    `[${mainQuestion.goals
+      .filter(
+        (goal, index) =>
+          index in goalsLeft &&
+          mainQuestion.timesFollowedUp[index] < goal_followup_cutoff
+      )
+      .map((goal, index) => `${index}`)
+      .join(', ')}]`
+  )
 
   const content = transcript
   const text = await promptLLM(prompt, content)
@@ -233,10 +249,11 @@ export async function generateLeadingQuestion(
 
   const goalStart = text.indexOf('<goal_start>')
   const goalEnd = text.indexOf('<goal_end>')
-  const goal = parseInt(text.slice(outputStart + 12, outputEnd))
+  const goal = parseInt(text.slice(goalStart + 12, goalEnd))
+  console.log(`Goal: ${goal}`)
 
-  // Add to the number of times a given goal has been referenced
-  mainQuestion.metadata[goal - 1] += 1
+  //Add to the number of times a given goal has been referenced
+  mainQuestion.timesFollowedUp[goal - 1] += 1
 
   return output
 }
