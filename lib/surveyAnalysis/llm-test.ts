@@ -1,29 +1,21 @@
 import { EnhancedQuestion } from '../types'
-import { analyzeTranscript, generateLeadingQuestion } from './llm'
+import {
+  analyzeTranscript,
+  generateLeadingQuestion,
+  evaluateResponseRelevance,
+  evaulateUserResponse
+} from './llm'
 
 export async function TestLLMAnalysisAndGeneration() {
   const transcript =
-    'I think the product is pretty good. The shape is very good. '
+    'It was a good day. I think that all the kids had fun and no one got hurt, so that is good.'
 
   const question = {
     id: '1',
-    text: 'How do you feel about the product?',
+    text: 'How was your day at camp?',
     type: 'follow_up',
-    goals: ['Shape', 'looks', 'feel']
+    goals: ['Incidents', 'safety', 'fun']
   } as EnhancedQuestion
 
-  const analysis = await analyzeTranscript(transcript, question, [
-    'Shape and specifically the roundness of it',
-    'looks',
-    'feel'
-  ])
-
-  if (analysis.indicies.length > 0) {
-    const leadingQuestion = await generateLeadingQuestion(
-      transcript,
-      question,
-      analysis.indicies[0]
-    )
-    console.log(leadingQuestion)
-  }
+  evaulateUserResponse(transcript, question)
 }
