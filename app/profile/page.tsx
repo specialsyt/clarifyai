@@ -20,8 +20,6 @@ export default async function ProfilePage() {
 
   const surveys = await getSurveysByUser(session.user?.id ?? '')
 
-  await TestLLMAnalysisAndGeneration()
-
   return (
     <main className="flex flex-col p-4">
       <ProfileView user={user} surveys={surveys} />
