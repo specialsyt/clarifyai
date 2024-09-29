@@ -1,20 +1,12 @@
 'use client'
 
-import { saveSurveyResponse, deleteSurvey, getSurvey } from '@/lib/db/survey'
 import { useLiveTranscription } from '@/lib/hooks/use-live-transcription'
-import { QuestionResponse, Survey, SurveySession } from '@/lib/types'
-import {
-  ArrowLeftIcon,
-  CopyIcon,
-  PlayIcon,
-  TrashIcon
-} from '@radix-ui/react-icons'
+import { Survey, SurveySession } from '@/lib/types'
+import { PlayIcon } from '@radix-ui/react-icons'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from './ui/button'
 import { AudioVisualizer } from '@/components/audio-visualizer'
-import { useAuthId } from '@/lib/hooks/use-user-auth'
 import { useSurveyController } from '@/lib/hooks/use-survey-controller'
 import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
 
@@ -66,13 +58,12 @@ export default function Session({
   }
 
   useEffect(() => {
-    ;(async () => {
-      if (currentQuestion) {
-        await speakText(currentQuestion)
+    if (currentQuestion) {
+      speakText(currentQuestion).then(() => {
         startRecording()
-      }
-    })()
-  }, [currentQuestion])
+      })
+    }
+  }, [currentQuestion, speakText, startRecording])
 
   return done ? (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
