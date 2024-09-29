@@ -1,8 +1,8 @@
 'use client'
 
-import { saveSurveyResponse, deleteSurvey } from '@/lib/db/survey'
+import { saveSurveyResponse, deleteSurvey, getSurvey } from '@/lib/db/survey'
 import { useLiveTranscription } from '@/lib/hooks/use-live-transcription'
-import { QuestionResponse, Survey } from '@/lib/types'
+import { QuestionResponse, Survey, SurveySession } from '@/lib/types'
 import {
   ArrowLeftIcon,
   CopyIcon,
@@ -19,10 +19,10 @@ import { useSurveyController } from '@/lib/hooks/use-survey-controller'
 import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
 
 export default function Session({
-  sessionId,
+  surveySession,
   survey
 }: {
-  sessionId: string
+  surveySession: SurveySession
   survey: Survey
 }) {
   const {

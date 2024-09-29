@@ -82,11 +82,16 @@ export type QuestionResponse = {
 export type SurveyResponse = {
   id: string
   surveyId: string
-  userId: string
   responses: QuestionResponse[]
 }
 
 export enum TranscriptRole {
   PARTICIPANT = 'participant',
   INTERVIEWER = 'interviewer'
+}
+
+export type SurveySession = {
+  id: string
+  surveyId: string
+  createdAt: string
 }
