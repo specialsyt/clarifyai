@@ -134,26 +134,22 @@ export default function SurveySetup({ session }: { session: Session }) {
                   defaultValue="informational"
                   name={`question type ${q.id}`}
                   onValueChange={val => {
-                    const arr = questions.map((q, index) => {
-                      if (q.id === q.id) {
+                    const arr = questions.map(question => {
+                      if (question.id === q.id) {
                         return val === 'follow_up'
-                          ? ({
+                          ? {
+                              ...question,
                               type: 'follow_up',
-                              goal: 'goal',
-                              id: q.id,
-                              text: q.text,
                               goals: []
-                            } as Question)
-                          : ({
-                              type: 'informational',
-                              id: q.id,
-                              text: q.text
-                            } as Question)
-                      } else {
-                        return q
+                            }
+                          : {
+                              ...question,
+                              type: 'informational'
+                            }
                       }
+                      return question
                     })
-                    setQuestions(arr)
+                    setQuestions(arr as Question[])
                   }}
                 >
                   <SelectTrigger className="w-[200px] peer border-b-2 bg-zinc-50 py-[9px] dark:border-zinc-800 dark:bg-zinc-950">
