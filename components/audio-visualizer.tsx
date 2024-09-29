@@ -17,7 +17,7 @@ export function AudioVisualizer({ mediaRecorder }: AudioVisualizerProps) {
           minDecibels={-70}
           maxDecibels={0}
           barWidth={2}
-          barColor={'#FFFFFF'}
+          barColor={'#000000'}
         />
       )}
     </>

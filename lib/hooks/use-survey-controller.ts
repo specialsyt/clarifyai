@@ -41,6 +41,7 @@ export function useSurveyController(sessionId: string, survey: Survey) {
     setResponses(newResponses)
     return makeTranscript(newResponses)
   }
+
   const addFollowUpQuestion = (question: string) => {
     setCurrentQuestion({
       id: crypto.randomUUID(),
@@ -67,18 +68,23 @@ export function useSurveyController(sessionId: string, survey: Survey) {
     setParentQuestion(survey.questions[currentQuestionIndex])
   }, [currentQuestionIndex])
 
+
+  useEffect(() => {
+    if (responses && done) {
+      saveSurvey()
+    }
+  }, [responses, done])
+
   const saveSurvey = async () => {
-    const surveyResponse: SurveyResponse = {
+    await saveSurveyResponse(sessionId, survey.id, {
       id: survey.id,
       surveyId: survey.id,
       responses: responses
-    }
-    await saveSurveyResponse(sessionId, survey.id, surveyResponse)
+    })
   }
 
   const endSurvey = () => {
     setDone(true)
-    saveSurvey()
   }
 
   return {

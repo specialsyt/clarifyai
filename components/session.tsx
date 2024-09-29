@@ -47,8 +47,7 @@ export default function Session({
     }
   }
 
-  useEffect(() => {
-    ;(async () => {
+  useEffect(() => {(async () => {
       if (currentQuestion) {
         console.log('parentQuestion', parentQuestion)
         await speakText(currentQuestion.text)
