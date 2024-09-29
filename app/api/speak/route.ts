@@ -22,8 +22,6 @@ async function deepgram_POST(request: NextRequest) {
   const model = request.nextUrl.searchParams.get('model') ?? 'aura-asteria-en'
   const message = await request.json()
 
-  console.log(model, message)
-
   const result = await deepgram.speak.request(message, { model })
   const stream = await result.getStream()
   const headers = await result.getHeaders()

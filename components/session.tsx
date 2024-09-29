@@ -58,7 +58,6 @@ export default function Session({
   useEffect(() => {
     ;(async () => {
       if (currentQuestion) {
-        console.log('parentQuestion', parentQuestion)
         setIsResponding(true)
         await speakText(currentQuestion.text)
         setIsResponding(false)
@@ -80,7 +79,6 @@ export default function Session({
           parentQuestion
         )
         if (followUpQuestion) {
-          console.log('followUpQuestion', followUpQuestion)
           addFollowUpQuestion(followUpQuestion)
           return
         }

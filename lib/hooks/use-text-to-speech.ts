@@ -26,7 +26,6 @@ export const useTextToSpeech = (model: string = 'aura-luna-en') => {
             loop: false,
             format: 'mp3',
             onend: () => {
-              console.log('Audio playback completed')
               resolve()
             }
           })
