@@ -1,5 +1,9 @@
 import Session from '@/components/session'
-import { getSurvey } from '@/lib/db/survey'
+import {
+  createSurveySession,
+  doesSurveyExist,
+  getSurvey
+} from '@/lib/db/survey'
 import { redirect } from 'next/navigation'
 
 export default async function SurveyPage({
@@ -7,18 +11,15 @@ export default async function SurveyPage({
 }: {
   params: { id: string }
 }) {
-  const survey = await getSurvey(params.id)
-  if (!survey) {
+  const surveyId = params.id
+  const surveyExists = await doesSurveyExist(surveyId)
+
+  if (!surveyExists) {
     return <div>Survey not found</div>
   }
-  console.log(survey)
+
   const sessionUUID = crypto.randomUUID()
+  await createSurveySession(surveyId, sessionUUID)
 
   redirect(`/session/${sessionUUID}`)
-
-  return (
-    <main className="flex flex-col p-4">
-      <Session survey={survey!} />
-    </main>
-  )
 }

@@ -20,7 +20,7 @@ import { HomeButton } from './home-button'
 import { IconJarLogoIcon } from '@radix-ui/react-icons'
 
 async function UserOrLogin() {
-  const session = (await auth()) as Session
+  const session = (await auth()) as Session | null
   return (
     <>
       {session?.user ? (
