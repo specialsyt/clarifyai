@@ -10,7 +10,7 @@ export default function ResultByQuestion({
   survey: Survey
   responses: SurveyResponse[]
 }) {
-  const url = window.location.origin + '/session/' + survey.id
+  const url = window.location.origin + '/survey/' + survey.id
   return (
     <div className="flex-col grow">
       <div className="grow w-full h-full rounded-lg border bg-white px-8 py-8 my-4 shadow-md dark:bg-zinc-950">
