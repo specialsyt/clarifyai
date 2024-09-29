@@ -21,7 +21,16 @@ export default function ProfileView({
       <div className="grow h-full items-center rounded-lg border bg-white px-8 py-8 my-4 shadow-md">
         <div className="text-7xl py-4">Welcome, {user.firstName}!</div>
         <hr />
-        {surveys.length == 0 ? <div>No Surveys Yet</div> : <></>}
+        {surveys.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-2xl font-semibold text-gray-600 dark:text-gray-400">
+              No Surveys Yet
+            </p>
+            <p className="mt-2 text-gray-500 dark:text-gray-500">
+              Create your first survey by clicking the plus button below.
+            </p>
+          </div>
+        ) : null}
         <div className="flex items-center flex-wrap pt-20">
           {surveys.map(s => {
             return <SurveyItem key={s.id} surveyInfo={s} />
