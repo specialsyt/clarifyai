@@ -44,12 +44,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         )}
       >
         <Toaster position="top-center" />
-        <Providers
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <div className="flex flex-col min-h-screen bg-muted/50">
             <Header />
             <main className="flex-1">{children}</main>
