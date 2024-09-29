@@ -7,7 +7,7 @@ import {
   Question
 } from '../types'
 import { makeTranscript } from '../utils'
-import { _saveSurveyResponse, saveSurveyResponse } from '../db/survey'
+import { saveSurveyResponse } from '../db/survey'
 import { useAuthId } from './use-user-auth'
 
 export function useSurveyController(sessionId: string, survey: Survey) {

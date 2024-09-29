@@ -54,14 +54,6 @@ export async function saveSurveyResponse(
   )
 }
 
-export async function _saveSurveyResponse(
-  surveyId: string,
-  userId: string,
-  surveyResponse: SurveyResponse
-): Promise<void> {
-  await kv.set('survey_response:' + surveyId + ':' + userId, surveyResponse)
-}
-
 export async function getSurveyResponsesByUser(
   userId: string,
   surveyId: string
