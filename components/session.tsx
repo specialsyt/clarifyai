@@ -47,8 +47,7 @@ export default function Session({
     }
   }
 
-  useEffect(() => {
-    ;(async () => {
+  useEffect(() => {(async () => {
       if (currentQuestion) {
         console.log('parentQuestion', parentQuestion)
         await speakText(currentQuestion.text)
@@ -88,12 +87,12 @@ export default function Session({
   }, [done])
 
   return done ? (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+    <div className="flex flex-col items-center justify-center ">
       <h1 className="text-2xl font-bold mb-8">{survey?.name}</h1>
       Thanks for completing this survey! Your results have been saved.
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+    <div className="flex flex-col items-center justify-center ">
       <h1 className="text-2xl font-bold mb-8">{survey?.name}</h1>
 
       <div className="mb-8 text-xl">{currentQuestion?.text}</div>

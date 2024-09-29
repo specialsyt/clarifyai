@@ -100,5 +100,6 @@ export enum TranscriptRole {
 export type SurveySession = {
   id: string
   surveyId: string
+  completed: boolean
   createdAt: string
 }
