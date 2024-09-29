@@ -10,13 +10,12 @@ import { makeTranscript } from '../utils'
 import { saveSurveyResponse } from '../db/survey'
 import { useAuthId } from './use-user-auth'
 
-export function useSurveyController(survey: Survey) {
+export function useSurveyController(sessionId: string, survey: Survey) {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
   const [parentQuestion, setParentQuestion] = useState<Question | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(-1)
   const [responses, setResponses] = useState<QuestionResponse[]>([])
   const [done, setDone] = useState(false)
-  const { authId } = useAuthId()
 
   useEffect(() => {
     console.log('responses', responses)
@@ -69,15 +68,12 @@ export function useSurveyController(survey: Survey) {
   }, [currentQuestionIndex])
 
   const saveSurvey = async () => {
-    if (authId) {
-      const surveyResponse: SurveyResponse = {
-        id: survey.id,
-        surveyId: survey.id,
-        userId: authId,
-        responses: responses
-      }
-      await saveSurveyResponse(survey.id, authId, surveyResponse)
+    const surveyResponse: SurveyResponse = {
+      id: survey.id,
+      surveyId: survey.id,
+      responses: responses
     }
+    await saveSurveyResponse(sessionId, survey.id, surveyResponse)
   }
 
   const endSurvey = () => {

@@ -26,7 +26,7 @@ export default function Session({
     nextQuestion,
     startSurvey,
     done
-  } = useSurveyController(survey)
+  } = useSurveyController(surveySession.id, survey)
 
   const { speakText } = useTextToSpeech()
 

@@ -44,11 +44,24 @@ export async function deleteSurvey(surveyId: string): Promise<void> {
 }
 
 export async function saveSurveyResponse(
+  surveySessionId: string,
   surveyId: string,
-  userId: string,
   surveyResponse: SurveyResponse
 ): Promise<void> {
-  await kv.set('survey_response:' + surveyId + ':' + userId, surveyResponse)
+  await kv.set(
+    'survey_response:' + surveyId + ':' + surveySessionId,
+    surveyResponse
+  )
+}
+
+export async function getSurveyResponsesById(
+  surveyId: string
+): Promise<SurveyResponse[]> {
+  const surveyResponseKeys = await kv.keys('survey_response:' + surveyId + ':*')
+  const surveyResponses = await Promise.all<SurveyResponse | null>(
+    surveyResponseKeys.map(key => kv.get(key))
+  )
+  return surveyResponses as SurveyResponse[]
 }
 
 export async function getSurveyResponsesByUser(
