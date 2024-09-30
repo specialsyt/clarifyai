@@ -43,8 +43,7 @@ export default function Session({
     transcript,
     startRecording,
     stopRecording,
-    mediaRecorder,
-    error
+    mediaRecorder
   } = useLiveTranscription()
 
   const handleClick = () => {

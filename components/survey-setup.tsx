@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { v4 as uuidv4 } from 'uuid'
 
 interface Result {
   type: string
@@ -32,7 +33,7 @@ export default function SurveySetup({ session }: { session: Session }) {
   const [result, dispatch] = useFormState(validateForm, undefined)
   const [questions, setQuestions] = useState<Question[]>([])
 
-  const [surveyId, setSurveyId] = useState(crypto.randomUUID())
+  const [surveyId, setSurveyId] = useState(uuidv4())
 
   async function validateForm(
     _prevState: Result | undefined,
@@ -208,7 +209,7 @@ export default function SurveySetup({ session }: { session: Session }) {
                 ...questions,
                 {
                   type: 'informational',
-                  id: crypto.randomUUID(),
+                  id: uuidv4(),
                   text: 'text'
                 } as Question
               ])

@@ -5,6 +5,7 @@ import {
   getSurvey
 } from '@/lib/db/survey'
 import { redirect } from 'next/navigation'
+import { v4 as uuidv4 } from 'uuid'
 
 export default async function SurveyPage({
   params
@@ -18,7 +19,7 @@ export default async function SurveyPage({
     return <div>Survey not found</div>
   }
 
-  const sessionUUID = crypto.randomUUID()
+  const sessionUUID = uuidv4()
   await createSurveySession(surveyId, sessionUUID)
 
   redirect(`/session/${sessionUUID}`)

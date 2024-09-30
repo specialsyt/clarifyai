@@ -99,9 +99,11 @@ export function useLiveTranscription(): TranscriptionHookResult {
 
   const startRecording = async () => {
     if (!deepgramClient) {
+      console.warn('Deepgram client not initialized')
       setError('Deepgram client not initialized')
       return
     }
+    console.log('starting recording')
 
     setTranscript('')
 
@@ -110,9 +112,42 @@ export function useLiveTranscription(): TranscriptionHookResult {
     setTranscriptionSocket(transcriptionSocket)
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
+      })
+
+      // Check if MediaRecorder is supported
+      if (typeof MediaRecorder === 'undefined') {
+        throw new Error('MediaRecorder is not supported in this browser')
+      }
+
+      // Try different MIME types
+      const mimeTypes = [
+        'audio/webm',
+        'audio/mp4',
+        'audio/wav',
+        'audio/ogg',
+        'audio/mpeg'
+      ]
+      let supportedMimeType = null
+
+      for (const type of mimeTypes) {
+        if (MediaRecorder.isTypeSupported(type)) {
+          supportedMimeType = type
+          break
+        }
+      }
+
+      if (!supportedMimeType) {
+        throw new Error('No supported MIME type found for MediaRecorder')
+      }
+
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm'
+        mimeType: supportedMimeType
       })
       mediaRecorderRef.current = mediaRecorder
 
@@ -124,7 +159,10 @@ export function useLiveTranscription(): TranscriptionHookResult {
         onSpeechEndResolve.current = resolve
       })
     } catch (error) {
-      setError('Error accessing microphone')
+      const errorMessage =
+        error instanceof Error ? error.message : String(error)
+      setError(`Error accessing microphone: ${errorMessage}`)
+      console.error('Error accessing microphone', error)
     }
   }
 

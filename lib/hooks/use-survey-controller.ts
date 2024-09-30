@@ -9,6 +9,7 @@ import {
 import { makeTranscript } from '../utils'
 import { saveSurveyResponse } from '../db/survey'
 import { useAuthId } from './use-user-auth'
+import { v4 as uuidv4 } from 'uuid'
 
 export function useSurveyController(sessionId: string, survey: Survey) {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
@@ -36,7 +37,7 @@ export function useSurveyController(sessionId: string, survey: Survey) {
 
   const addFollowUpQuestion = (question: string) => {
     setCurrentQuestion({
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       text: question,
       type: 'child',
       parentId: parentQuestion?.id || ''

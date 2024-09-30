@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { kv } from '@vercel/kv'
 import { getUser } from '../login/actions'
 import { AuthError } from 'next-auth'
-
+import { v4 as uuidv4 } from 'uuid'
 export async function createUser(
   email: string,
   hashedPassword: string,
@@ -23,7 +23,7 @@ export async function createUser(
     }
   } else {
     const user = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       email,
       password: hashedPassword,
       salt,
@@ -65,7 +65,7 @@ export async function signup(
     })
 
   if (parsedCredentials.success) {
-    const salt = crypto.randomUUID()
+    const salt = uuidv4()
 
     const encoder = new TextEncoder()
     const saltedPassword = encoder.encode(password + salt)
