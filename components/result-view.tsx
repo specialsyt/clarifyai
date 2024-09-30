@@ -64,13 +64,13 @@ export default function ResultView({
     <div className="flex-col grow">
       <div className="flex-row flex w-full space-between items-center">
         <button
-          className="my-4 w-40 flex flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="my-4 w-20 sm:w-40 flex flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
           onClick={() => {
             router.push('/profile')
           }}
         >
           <ArrowLeftIcon />
-          <div className="pl-2">Back to profile</div>
+          <div className="pl-2 hidden sm:block">Profile</div>
         </button>
 
         {/* Add this new section for displaying the survey link */}
@@ -81,23 +81,23 @@ export default function ResultView({
         <div className="flex justify-end">
           {/* Add this new button */}
           <button
-            className="my-4 mr-4 w-40 flex flex-row items-center justify-center rounded-md bg-green-600 p-2 text-sm font-semibold text-white hover:bg-green-700"
+            className="my-4 mr-4 w-10 sm:w-40 flex flex-row items-center justify-center rounded-md bg-green-600 p-2 text-sm font-semibold text-white hover:bg-green-700"
             type="button"
             onClick={() => exportToCSV(survey, responses)}
           >
-            <div>Export to CSV</div>
             <IconDownload className="mx-1" />
+            <div className="hidden sm:block">Export to CSV</div>
           </button>
           <button
-            className="my-4 w-40 flex flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="my-4 w-10 sm:w-40 flex flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
             type="button"
             onClick={() => {
               deleteSurvey(survey.id)
               router.push('/profile')
             }}
           >
-            <div className="pr-2">Delete Survey</div>
             <TrashIcon />
+            <div className="pl-2 hidden sm:block">Delete Survey</div>
           </button>
         </div>
       </div>
